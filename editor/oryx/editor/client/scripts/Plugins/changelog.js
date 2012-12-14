@@ -49,7 +49,7 @@ ORYX.Plugins.Changelog =
         this.redologDiv.className = "redolog";
         this.changelogDiv.appendChild(this.redologDiv);
         
-        
+        this.users = {};
         
         this.undolog = {};
         this.redolog = {};
@@ -229,7 +229,9 @@ ORYX.Plugins.Changelog =
     },
     
     updateFarbrauschInfos: function updateFarbrauschInfos(evt) {
-        this.users = evt.users;
+        if (typeof evt.users !== "undefined") {
+            this.users = evt.users;
+        }
     },
     
     getColorForUserId: function getColorForUserId(userId) {
