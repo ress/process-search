@@ -2,7 +2,7 @@
 <project basedir="." default="all">
     <property name="jsdir" value="${basedir}/oryx/editor/client/scripts/"/>
     <property name="build-dir" value="compiled" />
-    <property name="deploy-dir" value="${basedir}/../appengine/" />
+    <property name="deploy-dir" value="${basedir}/deploy/" />
     <import file="buildApps/build.xml" />
 
     <!-- Editor properties *************************************************** -->
