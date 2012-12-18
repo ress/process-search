@@ -78,32 +78,16 @@ ORYX.Plugins.JSONExport = ORYX.Plugins.AbstractPlugin.extend({
         // bpmn2.0 does the job until it is supported.
         
         // Getting the StencilSetExtensions:
-        
         var canvasObj = this.facade.getJSON();
         var exts = Object.toJSON(canvasObj.ssextensions);
-        
-        // Open a window with a hidden form and POST the data to the ORYX-project:
-        
-        var win = window.open("");
-        
-        win.document.open();
-        win.document.write("<p>Exporting...</p>");
-        // write something so the HTML body is present.
-        win.document.close();
-        var submitForm = win.document.createElement("form");
-        win.document.body.appendChild(submitForm);
-        var createHiddenElement = function(name, value) {
-            var newElement = document.createElement("input");
-            newElement.name=name;
-            newElement.type="hidden";
-            newElement.value = value;
-            return newElement;
-        }
-        submitForm.appendChild(createHiddenElement("json", serializedCanvas) );
-        submitForm.appendChild(createHiddenElement("stencilset", ssetURL) );
-        submitForm.appendChild(createHiddenElement("exts", exts));
-        submitForm.method = "POST";
-        submitForm.action= "http://oryx-project.org/oryx/jsoneditor";
-        submitForm.submit();
+
+        var url = "/search";
+        var params = {
+            json: serializedCanvas,
+            stencilset: ssetURL,
+            exts: exts
+        };
+
+        jQuery.post(url, params);
     }
 });
