@@ -88,6 +88,12 @@ ORYX.Plugins.JSONExport = ORYX.Plugins.AbstractPlugin.extend({
             exts: exts
         };
 
-        jQuery.post(url, params);
+        jQuery.ajax({
+            url: url,
+            type: "POST",
+            dataType: "json",
+            contentType: "application/json",
+            data: JSON.stringify(params)
+        });
     }
 });
