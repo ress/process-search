@@ -10,6 +10,7 @@ object ApplicationBuild extends Build {
     val appDependencies = Seq(
       javaCore
       // Add your project dependencies here,
+      //"org.jbpt" % "jbpt" % "0.2.348"
     )
 
     val main = play.Project(appName, appVersion, appDependencies).settings(
