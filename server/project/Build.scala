@@ -8,9 +8,11 @@ object ApplicationBuild extends Build {
     val appVersion      = "1.0-SNAPSHOT"
 
     val appDependencies = Seq(
-      javaCore
+      javaCore,
       // Add your project dependencies here,
       //"org.jbpt" % "jbpt" % "0.2.348"
+      "org.apache.lucene" % "lucene-core" % "3.6.1",
+      "org.apache.lucene" % "lucene-analyzers" % "3.6.1"
     )
 
     val main = play.Project(appName, appVersion, appDependencies).settings(

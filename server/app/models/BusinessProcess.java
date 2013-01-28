@@ -8,21 +8,9 @@ import org.jbpt.pm.ProcessModel;
 import play.Logger;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 
 public class BusinessProcess {
-    protected static class SequenceFlow {
-        protected ArrayList<String> outgoing;
-        protected String resourceId;
-
-        public SequenceFlow(String resourceId, ArrayList<String> outgoing) {
-            this.resourceId = resourceId;
-            this.outgoing = outgoing;
-        }
-    }
-
     public static ProcessModel fromJson(JsonNode bpModel) {
         ProcessModel processModel = new ProcessModel();
         // Holds the objects for every node in the diagram that are found in the first pass
@@ -93,19 +81,31 @@ public class BusinessProcess {
             }
         }
 
+        Logger.error("Petri-net visualization: https://chart.googleapis.com/chart?cht=gv&chl=" + java.net.URLEncoder.encode(processModel.toPetriNet().toDOT()));
+
 
         return processModel;
     }
 
     public static ProcessModel fromJsonString(String jsonModel) {
         JsonNode bpModel;
-        
+
         try {
             bpModel = (new ObjectMapper()).readTree(jsonModel);
             return fromJson(bpModel);
         } catch (Exception e) {
             Logger.error("Could not parse JSON of a processWave Business Process Model.", e);
             return null;
+        }
+    }
+
+    protected static class SequenceFlow {
+        protected ArrayList<String> outgoing;
+        protected String resourceId;
+
+        public SequenceFlow(String resourceId, ArrayList<String> outgoing) {
+            this.resourceId = resourceId;
+            this.outgoing = outgoing;
         }
     }
 }
