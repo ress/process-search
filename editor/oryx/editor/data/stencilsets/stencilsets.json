@@ -1,5 +1,13 @@
 [
   {
+    "title":"BPMN Search",
+    "namespace":"http://b3mn.org/stencilset/bpmn2.0#",
+    "description":"Limited BPMN stencil set for search query.",
+    "uri":"/bpmn-search/bpmn-search.json",
+    "icon_url":"/bpmn2.0/bpmn2.0.png",
+    "visible":true
+  },
+  {
     "title":"Simple BPMN 2.0 Processes",
     "namespace":"http://b3mn.org/stencilset/simpleBPMN2.0#",
     "description":"Basic BPMN 2.0 subset for beginners.",

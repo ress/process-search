@@ -1,0 +1,833 @@
+{
+    "title": "BPMN 2.0",
+    "namespace": "http://schema.omg.org/spec/BPMN/2.0",
+    "description": "Limited BPMN stencil set for search query.",
+    "propertyPackages": [
+        {
+            "name": "baseAttributes",
+            "properties": [
+                {
+                    "id": "id",
+                    "type": "String",
+                    "title": "Id",
+                    "value": "",
+                    "description": "This attribute is used to uniquely identify BPMN elements.",
+                    "description_de": "Definiert eine eindeutige ID, um einzelne BPMN-Elemente technisch unterscheiden zu können.",
+                    "readonly": false,
+                    "optional": false,
+                    "length": "50"
+                },
+                {
+                    "id": "name",
+                    "type": "String",
+                    "title": "Name",
+                    "value": "",
+                    "description": "The descriptive name of the BPMN element.",
+                    "description_de": "Bezeichnung des BPMN-Elementes.",
+                    "readonly": false,
+                    "optional": true,
+                    "length": "",
+                    "wrapLines": true,
+                    "refToView": "text_name"
+                }
+            ]
+        },
+        {
+            "name": "diagram",
+            "properties": [
+                {
+                    "id": "targetnamespace",
+                    "type": "String",
+                    "title": "Target Namespace",
+                    "title_de": "Ziel-Namensraum",
+                    "value": "http://schema.omg.org/spec/BPMN/2.0",
+                    "description": "Defines the XML namespace of the elements inside the document.",
+                    "description_de": "Definiert den XML-Namensraum, der für die Elemente im Dokument verwendet wird.",
+                    "readonly": false,
+                    "optional": true,
+                    "length": "50"
+                }
+            ]
+        }
+    ],
+    "stencils": [
+        {
+            "type": "node",
+            "id": "BPMNDiagram",
+            "title": "BPMN-Diagram",
+            "title_de": "BPMN-Diagramm",
+            "groups": [
+                "Diagram"
+            ],
+            "description": "A BPMN Diagram.",
+            "view": "diagram.svg",
+            "icon": "diagram.png",
+            "mayBeRoot": true,
+            "hide": true,
+            "propertyPackages": [
+                "baseAttributes",
+                "diagram"
+            ],
+            "roles": [
+                "canContainArtifacts"
+            ]
+        },
+        {
+            "type": "node",
+            "id": "Task",
+            "title": "Task",
+            "title_de": "Task",
+            "groups": [
+                "Activities"
+            ],
+            "groups_de": [
+                "Aktivitäten"
+            ],
+            "description": "A task is a unit of work - the job to be performed.",
+            "description_de": "Eine Task ist eine Arbeitseinheit. Sie repräsentiert die Aufgabe, die zu tun ist.",
+            "view": "activity/task.svg",
+            "icon": "activity/task.png",
+            "propertyPackages": [
+                "baseAttributes"
+            ],
+            "roles": [
+                "all",
+                "sequence_start",
+                "sequence_end",
+                "from_task_event",
+                "to_task_event",
+                "FromEventbasedGateway",
+                "messageflow_start",
+                "messageflow_end",
+                "fromtoall",
+                "ActivitiesMorph"
+            ]
+        },
+        {
+            "type": "edge",
+            "id": "SequenceFlow",
+            "title": "Sequence Flow",
+            "title_de": "Sequenzfluss",
+            "description": "Sequence Flow defines the execution order of activities.",
+            "description_de": "Ein Sequenzfluss definiert die Reihenfolge der Ausführung von Aktivitäten.",
+            "groups": [
+                "Connecting Objects"
+            ],
+            "groups_de": [
+                "Konnektoren"
+            ],
+            "view": "connector/sequenceflow.svg",
+            "icon": "connector/sequenceflow.png",
+            "propertyPackages": [
+                "baseAttributes"
+            ],
+            "roles": [
+                "all",
+                "ConnectingObjectsMorph"
+            ],
+            "properties": [
+                {
+                    "id": "conditionexpression",
+                    "type": "String",
+                    "title": "Condition Expression",
+                    "title_de": "Bedingungsausdruck",
+                    "value": "",
+                    "description": "",
+                    "readonly": false,
+                    "optional": true,
+                    "length": "",
+                    "refToView": "condition",
+                    "wrapLines": false
+                }
+            ]
+        },
+        {
+            "type": "node",
+            "id": "Exclusive_Databased_Gateway",
+            "title": "Data-based Exclusive (XOR) Gateway",
+            "title_de": "Daten-basiertes exklusives Gateway",
+            "description": "When splitting, it routes the sequence flow to exactly one of the outgoing branches based on conditions. When merging, it awaits one incoming branch to complete before triggering the outgoing flow.",
+            "description_de": "Bei einer Verzweigung wird der Sequenzfluss abhängig von Verzweigungsbedingungen zu genau einer ausgehenden Kante geleitet. Bei einer Zusammenführung wird auf eine der eingehenden Kante gewartet, um den ausgehenden Sequenzfluss zu aktivieren.",
+            "groups": [
+                "XOR Gateway"
+            ],
+            "view": "gateway/exclusive.databased.svg",
+            "icon": "gateway/exclusive.databased.png",
+            "propertyPackages": [
+                "baseAttributes"
+            ],
+            "properties": [
+                {
+                    "id": "gatewaytype",
+                    "type": "String",
+                    "title": "Gateway-Typ",
+                    "value": "XOR",
+                    "description": "",
+                    "readonly": true,
+                    "optional": false,
+                    "length": ""
+                },
+                {
+                    "id": "xortype",
+                    "type": "String",
+                    "title": "XOR type",
+                    "title_de": "XOR-Typ",
+                    "value": "Data",
+                    "description": "",
+                    "readonly": true,
+                    "optional": false,
+                    "length": ""
+                },
+                {
+                    "id": "markervisible",
+                    "type": "Boolean",
+                    "title": "X-Marker visible",
+                    "title_de": "X-Marker sichtbar",
+                    "value": "true",
+                    "description": "",
+                    "readonly": false,
+                    "optional": false,
+                    "refToView": "cross"
+                },
+                {
+                    "id": "defaultgate",
+                    "type": "String",
+                    "title": "Default gate",
+                    "title_de": "Standardgate",
+                    "value": "",
+                    "description": "",
+                    "readonly": false,
+                    "optional": true,
+                    "refToView": "",
+                    "length": "50",
+                    "wrapLines": true
+                },
+                {
+                    "id": "gate_outgoingsequenceflow",
+                    "type": "String",
+                    "title": "[Gate] OutgoingSequenceFlow",
+                    "title_de": "[Gate] Ausgehender Steuerfluss",
+                    "value": "",
+                    "description": "",
+                    "readonly": false,
+                    "optional": true,
+                    "refToView": "",
+                    "length": "50"
+                },
+                {
+                    "id": "gate_assignments",
+                    "type": "String",
+                    "title": "[Gate] Assignments",
+                    "title_de": "[Gates] Zuweisungen",
+                    "value": "",
+                    "description": "",
+                    "readonly": false,
+                    "optional": true,
+                    "refToView": "",
+                    "length": "50",
+                    "wrapLines": true
+                }
+            ],
+            "roles": [
+                "all",
+                "sequence_start",
+                "sequence_end",
+                "choreography_sequence_start",
+                "choreography_sequence_end",
+                "fromtoall",
+                "GatewaysMorph"
+            ]
+        },
+        {
+            "type": "node",
+            "id": "ParallelGateway",
+            "title": "Parallel Gateway",
+            "title_de": "Paralleles Gateway",
+            "groups": [
+                "Parallel Gateway"
+            ],
+            "description": "When used to split the sequence flow, all outgoing branches are activated simultaneously. When merging parallel branches it waits for all incoming branches to complete before triggering the outgoing flow.",
+            "description_de": "Wenn der Sequenzfluss verzweigt wird, werden alle ausgehenden Kanten simultan aktiviert. Bei der Zusammenführung wird auf alle eingehenden Kanten gewartet, bevor der ausgehende Sequenzfluss aktiviert wird.",
+            "view": "gateway/parallel.svg",
+            "icon": "gateway/parallel.png",
+            "propertyPackages": [
+                "baseAttributes"
+            ],
+            "properties": [
+                {
+                    "id": "gatewaytype",
+                    "type": "String",
+                    "title": "GatewayType",
+                    "title_de": "Gatewaytyp",
+                    "value": "AND",
+                    "description": "",
+                    "readonly": true,
+                    "optional": false,
+                    "length": ""
+                }
+            ],
+            "roles": [
+                "all",
+                "sequence_start",
+                "sequence_end",
+                "choreography_sequence_start",
+                "choreography_sequence_end",
+                "fromtoall",
+                "GatewaysMorph"
+            ]
+        },
+        {
+            "type": "node",
+            "id": "StartNoneEvent",
+            "title": "Start Event",
+            "title_de": "Start-Ereignis",
+            "groups": [
+                "Start Events"
+            ],
+            "groups_de": [
+                "Start-Ereignisse"
+            ],
+            "description": "Untyped start event.",
+            "description_de": "Ein nicht weiter typisiertes Start-Ereignis.",
+            "view": "startevent/none.svg",
+            "icon": "startevent/none.png",
+            "propertyPackages": [
+                "baseAttributes"
+            ],
+            "roles": [
+                "all",
+                "Startevents_all",
+                "sequence_start",
+                "choreography_sequence_start",
+                "to_task_event",
+                "from_task_event",
+                "fromtoall",
+                "StartEventsMorph"
+            ]
+        },
+        {
+            "type": "node",
+            "id": "EndNoneEvent",
+            "title": "End Event",
+            "title_de": "End-Ereignis",
+            "groups": [
+                "End Events"
+            ],
+            "groups_de": [
+                "End-Ereignisse"
+            ],
+            "description": "The untyped end event typically marks the standard end of a process.",
+            "description_de": "Untypisiertes End-Ereignis, welches ein normales Ende eines Prozesses markiert.",
+            "view": "endevent/none.svg",
+            "icon": "endevent/none.png",
+            "propertyPackages": [
+                "baseAttributes"
+            ],
+            "roles": [
+                "all",
+                "sequence_end",
+                "to_task_event",
+                "from_task_event",
+                "fromtoall",
+                "choreography_sequence_end",
+                "Endevents_all",
+                "EndEventsMorph"
+            ],
+            "properties": [
+                {
+                    "id": "trigger",
+                    "type": "String",
+                    "title": "Trigger",
+                    "title_de": "Auslöser",
+                    "value": "None",
+                    "description": "",
+                    "readonly": true,
+                    "optional": false
+                }
+            ]
+        }
+    ],
+    "rules": {
+        "cardinalityRules": [
+            {
+                "role": "Startevents_all",
+                "maximumOccurrence": null,
+                "incomingEdges": [
+                    {
+                        "role": "SequenceFlow",
+                        "maximum": 0
+                    }
+                ]
+            },
+            {
+                "role": "Endevents_all",
+                "maximumOccurrence": null,
+                "outgoingEdges": [
+                    {
+                        "role": "SequenceFlow",
+                        "maximum": 0
+                    }
+                ]
+            }
+        ],
+        "connectionRules": [
+            {
+                "role": "SequenceFlow",
+                "connects": [
+                    {
+                        "from": "sequence_start",
+                        "to": [
+                            "sequence_end"
+                        ]
+                    },
+                    {
+                        "from": "choreography_sequence_start",
+                        "to": [
+                            "choreography_sequence_end"
+                        ]
+                    },
+                    {
+                        "from": "Exclusive_Eventbased_Gateway",
+                        "to": [
+                            "FromEventbasedGateway"
+                        ]
+                    },
+                    {
+                        "from": "EventbasedGateway",
+                        "to": [
+                            "FromEventbasedGateway"
+                        ]
+                    }
+                ]
+            },
+            {
+                "role": "MessageFlow",
+                "connects": [
+                    {
+                        "from": "messageflow_start",
+                        "to": [
+                            "messageflow_end"
+                        ]
+                    }
+                ]
+            },
+            {
+                "role": "ChoreographyMessageFlowStart",
+                "connects": [
+                    {
+                        "from": "messageflow_start",
+                        "to": [
+                            "choreography_messageflow_end"
+                        ]
+                    }
+                ]
+            },
+            {
+                "role": "ChoreographyMessageFlowEnd",
+                "connects": [
+                    {
+                        "from": "choreography_messageflow_start",
+                        "to": [
+                            "messageflow_end"
+                        ]
+                    }
+                ]
+            },
+            {
+                "role": "IntermediateEventOnActivityBoundary",
+                "connects": [
+                    {
+                        "from": "Task",
+                        "to": [
+                            "IntermediateEventOnActivityBoundary"
+                        ]
+                    }
+                ]
+            },
+            {
+                "role": "IntermediateEventOnSubprocessBoundary",
+                "connects": [
+                    {
+                        "from": "CollapsedSubprocess",
+                        "to": [
+                            "IntermediateEventOnSubprocessBoundary"
+                        ]
+                    },
+                    {
+                        "from": "Subprocess",
+                        "to": [
+                            "IntermediateEventOnSubprocessBoundary"
+                        ]
+                    }
+                ]
+            },
+            {
+                "role": "EventOnChoreographyActivityBoundary",
+                "connects": [
+                    {
+                        "from": "ChoreographyMorph",
+                        "to": [
+                            "EventOnChoreographyActivityBoundary"
+                        ]
+                    }
+                ]
+            },
+            {
+                "role": "Association_Unidirectional",
+                "connects": [
+                    {
+                        "from": "from_task_event",
+                        "to": [
+                            "DataObject"
+                        ]
+                    },
+                    {
+                        "from": "from_task_event",
+                        "to": [
+                            "DataStore"
+                        ]
+                    },
+                    {
+                        "from": "from_task_event",
+                        "to": [
+                            "ITSystem"
+                        ]
+                    },
+                    {
+                        "from": "DataObject",
+                        "to": [
+                            "to_task_event"
+                        ]
+                    },
+                    {
+                        "from": "DataStore",
+                        "to": [
+                            "to_task_event"
+                        ]
+                    },
+                    {
+                        "from": "ITSystem",
+                        "to": [
+                            "to_task_event"
+                        ]
+                    },
+                    {
+                        "from": "IntermediateCompensationEventCatching",
+                        "to": [
+                            "to_task_event"
+                        ]
+                    }
+                ]
+            },
+            {
+                "role": "Association_Undirected",
+                "connects": [
+                    {
+                        "from": "SequenceFlow",
+                        "to": [
+                            "DataObject"
+                        ]
+                    },
+                    {
+                        "from": "DataObject",
+                        "to": [
+                            "SequenceFlow"
+                        ]
+                    },
+                    {
+                        "from": "fromtoall",
+                        "to": [
+                            "TextAnnotation"
+                        ]
+                    },
+                    {
+                        "from": "TextAnnotation",
+                        "to": "fromtoall"
+                    },
+                    {
+                        "from": "Message",
+                        "to": [
+                            "MessageFlow"
+                        ]
+                    },
+                    {
+                        "from": "MessageFlow",
+                        "to": [
+                            "Message"
+                        ]
+                    },
+                    {
+                        "from": "Message",
+                        "to": [
+                            "ChoreographyElement"
+                        ]
+                    },
+                    {
+                        "from": "ChoreographyElement",
+                        "to": [
+                            "Message"
+                        ]
+                    },
+                    {
+                        "from": "ChoreographyElement",
+                        "to": [
+                            "TextAnnotation"
+                        ]
+                    },
+                    {
+                        "from": "TextAnnotation",
+                        "to": "ChoreographyElement"
+                    }
+                ]
+            }
+        ],
+        "containmentRules": [
+            {
+                "role": "BPMNDiagram",
+                "contains": [
+                    "all"
+                ]
+            }
+        ],
+        "morphingRules": [
+            {
+                "role": "ActivitiesMorph",
+                "baseMorphs": [
+                    "Task"
+                ],
+                "preserveBounds": true
+            },
+            {
+                "role": "GatewaysMorph",
+                "baseMorphs": [
+                    "Exclusive_Databased_Gateway",
+                    "ParallelGateway"
+                ]
+            },
+            {
+                "role": "StartEventsMorph",
+                "baseMorphs": [
+                    "StartNoneEvent"
+                ],
+                "showInShapeMenu": false
+            },
+            {
+                "role": "EndEventsMorph",
+                "baseMorphs": [
+                    "EndNoneEvent"
+                ]
+            }
+        ],
+        "layoutRules": [
+            {
+                "role": "ActivitiesMorph",
+                "outs": [
+                    {
+                        "edgeRole": "MessageFlow",
+                        "t": 2,
+                        "r": 1,
+                        "b": 2,
+                        "l": 1
+                    },
+                    {
+                        "t": 1,
+                        "r": 2,
+                        "b": 1,
+                        "l": 2
+                    }
+                ],
+                "ins": [
+                    {
+                        "edgeRole": "MessageFlow",
+                        "t": 2,
+                        "r": 1,
+                        "b": 2,
+                        "l": 1
+                    },
+                    {
+                        "t": 1,
+                        "r": 2,
+                        "b": 1,
+                        "l": 2
+                    }
+                ]
+            },
+            {
+                "role": "EventActivitiesMorph",
+                "outs": [
+                    {
+                        "edgeRole": "MessageFlow",
+                        "t": 2,
+                        "r": 1,
+                        "b": 2,
+                        "l": 1
+                    },
+                    {
+                        "t": 1,
+                        "r": 2,
+                        "b": 1,
+                        "l": 2
+                    }
+                ],
+                "ins": [
+                    {
+                        "edgeRole": "MessageFlow",
+                        "t": 2,
+                        "r": 1,
+                        "b": 2,
+                        "l": 1
+                    },
+                    {
+                        "t": 1,
+                        "r": 2,
+                        "b": 1,
+                        "l": 2
+                    }
+                ]
+            },
+            {
+                "role": "ChoreographyMorph",
+                "outs": [
+                    {
+                        "edgeRole": "MessageFlow",
+                        "t": 2,
+                        "r": 1,
+                        "b": 2,
+                        "l": 1
+                    },
+                    {
+                        "t": 1,
+                        "r": 2,
+                        "b": 1,
+                        "l": 2
+                    }
+                ],
+                "ins": [
+                    {
+                        "edgeRole": "MessageFlow",
+                        "t": 2,
+                        "r": 1,
+                        "b": 2,
+                        "l": 1
+                    },
+                    {
+                        "t": 1,
+                        "r": 2,
+                        "b": 1,
+                        "l": 2
+                    }
+                ]
+            },
+            {
+                "role": "GatewaysMorph",
+                "outs": [
+                    {
+                        "t": 2,
+                        "r": 1,
+                        "b": 2,
+                        "l": 1
+                    }
+                ]
+            },
+            {
+                "role": "StartEventsMorph",
+                "outs": [
+                    {
+                        "edgeRole": "MessageFlow",
+                        "t": 2,
+                        "r": 1,
+                        "b": 2,
+                        "l": 1
+                    },
+                    {
+                        "t": 1,
+                        "r": 2,
+                        "b": 1,
+                        "l": 2
+                    }
+                ],
+                "ins": [
+                    {
+                        "edgeRole": "MessageFlow",
+                        "t": 2,
+                        "r": 1,
+                        "b": 2,
+                        "l": 1
+                    },
+                    {
+                        "t": 1,
+                        "r": 2,
+                        "b": 1,
+                        "l": 2
+                    }
+                ]
+            },
+            {
+                "role": "IntermediateEventsMorph",
+                "outs": [
+                    {
+                        "edgeRole": "MessageFlow",
+                        "t": 2,
+                        "r": 1,
+                        "b": 2,
+                        "l": 1
+                    },
+                    {
+                        "t": 1,
+                        "r": 2,
+                        "b": 1,
+                        "l": 2
+                    }
+                ],
+                "ins": [
+                    {
+                        "edgeRole": "MessageFlow",
+                        "t": 2,
+                        "r": 1,
+                        "b": 2,
+                        "l": 1
+                    },
+                    {
+                        "t": 1,
+                        "r": 2,
+                        "b": 1,
+                        "l": 2
+                    }
+                ]
+            },
+            {
+                "role": "EndEventsMorph",
+                "outs": [
+                    {
+                        "edgeRole": "MessageFlow",
+                        "t": 2,
+                        "r": 1,
+                        "b": 2,
+                        "l": 1
+                    },
+                    {
+                        "t": 1,
+                        "r": 2,
+                        "b": 1,
+                        "l": 2
+                    }
+                ],
+                "ins": [
+                    {
+                        "edgeRole": "MessageFlow",
+                        "t": 2,
+                        "r": 1,
+                        "b": 2,
+                        "l": 1
+                    },
+                    {
+                        "t": 1,
+                        "r": 2,
+                        "b": 1,
+                        "l": 2
+                    }
+                ]
+            }
+        ]
+    }
+}
