@@ -41,7 +41,7 @@ public class Search extends Controller {
                 }
 
                 Set<RelationCacheRecord> results = engine.index.search(net);
-                resultMessage = results.size() + " model(s) found.";
+                resultMessage = "{ \"message\" : \"" + results.size() + " model(s) found.\" }";
                 for (RelationCacheRecord result : results) {
                     resultMessage += " " + result.getFile() + ",";
                     Logger.info("Result file=" + result.getFile() + " visualization= " + result.getNet().toString());

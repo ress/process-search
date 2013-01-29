@@ -1,6 +1,6 @@
 <html>
     <head profile="http://purl.org/NET/erdf/profile">
-        <title>Oryx</title>
+        <title>Process Search</title>
 		
         <!-- libraries -->
         <script src="console.js" type="text/javascript" charset="utf-8"></script>
@@ -9,7 +9,12 @@
         <script src="../oryx/editor/lib/ext-2.0.2/adapter/ext/ext-base.js" type="text/javascript"></script>
 		<script src="../oryx/editor/lib/ext-2.0.2/ext-all.js" type="text/javascript"></script>
 		<script src="../oryx/editor/lib/ext-2.0.2/color-field.js" type="text/javascript"></script>
-		<script src="jquery-1.8.3.min.js"></script>
+		<!--<script src="jquery-1.8.3.min.js"></script>-->
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js" type="text/javascript"></script>
+        <script type="text/javascript">
+            jQuery.noConflict();
+        </script>
+
 		<script src="../oryx/editor/lib/jquery-ui-1.8.1.custom/js/jquery-ui-1.8.1.custom.min.js"></script>
         
         <style media="screen" type="text/css">
@@ -89,22 +94,68 @@
         <script src="../oryx/editor/client/scripts/Plugins/newshaperepository.js" type="text/javascript"></script>
         <script src="../oryx/editor/client/scripts/Plugins/dockerCreation.js" type="text/javascript"></script>
         <script src="../oryx/editor/client/scripts/Plugins/schlaumeier.js" type="text/javascript"></script>    
-        <script src="../oryx/editor/client/scripts/Plugins/json_export.js" type="text/javascript"></script>   
+        <script src="../oryx/editor/client/scripts/Plugins/json_export.js" type="text/javascript"></script> 
+        <script src="../oryx/editor/client/scripts/Plugins/external_interface.js" type="text/javascript"></script>  
 		
         <!-- oryx editor -->
         <link rel="Stylesheet" media="screen" href="../oryx/editor/css/theme_norm.css" type="text/css" />
+
+        <!-- Bootstrap -->
+        <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/css/bootstrap-combined.min.css" rel="stylesheet">
+        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/js/bootstrap.min.js"></script>
+
+        <!-- FontAwesome -->
+        <link href="fontawesome/font-awesome.min.css" rel="stylesheet" />
     </head>
 
-    <body style="display: block; overflow: hidden;">
-        <div id="oryx-canvas" style="width: 700px; margin: auto; margin-top: 100px;">
-        </div>
+    <body style="display: block; overflow: hidden; text-align: center;">
+        <h1>Process Search</h1>
+        <div id="oryx-canvas" style="width: 700px; margin: auto; padding: 15px; height: 400px; "></div>
+        <div id="error" style="color: red">&nbsp;</div>
+        <div id="success" style="color: green">&nbsp;</div>
+        <button id="search" class="btn btn-large btn-primary"><i class="icon-search"></i> Search</button>
 
         <script type='text/javascript'>
-            var ed;
+            jQuery("#search").click(function() {
+                // Show progress to user
+                jQuery("#search i").attr('class', 'icon-spinner icon-spin');
+                jQuery("#search").attr('disabled', true);
+                jQuery("#error").html('&nbsp;');
+                jQuery("#success").html('&nbsp;');
+
+                var model = window.ORYXEditor.getSerializedJSON();
+                var params = {
+                    json: model
+                };
+
+                var searchRequest = jQuery.ajax({
+                    url: "/search",
+                    type: "POST",
+                    dataType: "json",
+                    contentType: "application/json",
+                    data: JSON.stringify(params)
+                });
+
+                searchRequest.fail(function(jqXHR, textStatus, exception) {
+                    jQuery("#search i").attr('class', 'icon-search');
+                    jQuery("#search").attr('disabled', false);
+                    jQuery("#error").html('There has been an error: ' + textStatus);
+                });
+
+                searchRequest.done(function(data) {
+                    jQuery("#search i").attr('class', 'icon-search');
+                    jQuery("#search").attr('disabled', false);
+                    jQuery("#success").html(data.message);
+                });
+
+            });
+        </script>
+
+        <script type='text/javascript'>
             var stencilSetName = _getStencilSetName();
 
             function onOryxResourcesLoaded(){
-                ed = new ORYX.Editor({
+                window.ORYXEditor = new ORYX.Editor({
                   'id': 'oryx-canvas',
                   'stencilset': {
                     'url': ORYX.CONFIG.ROOT_PATH + 'editor/data/stencilsets/' + stencilSetName + '/' + stencilSetName + '.json'

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <config>
   <plugins>
-    <plugin source="toolbar.js" name="ORYX.Plugins.Toolbar" core="true" />		
+    <!-- <plugin source="toolbar.js" name="ORYX.Plugins.Toolbar" core="true" />		 -->
     <plugin source="shapemenu.js" name="ORYX.Plugins.ShapeMenuPlugin" core="true" />
     <!-- <plugin source="canvasResize.js" name="ORYX.Plugins.CanvasResize" /> -->
     <plugin source="renameShapes.js" name="ORYX.Plugins.RenameShapes" />
@@ -41,7 +41,8 @@
     <!-- <plugin source="changelog.js" name="ORYX.Plugins.Changelog"/> -->
     <plugin source="newshaperepository.js" name="ORYX.Plugins.NewShapeRepository"/>
     <plugin source="dockerCreation.js" name="ORYX.Plugins.DockerCreation" />
-    <plugin source="json_export.js" name="ORYX.Plugins.JSONExport" />      
+    <plugin source="json_export.js" name="ORYX.Plugins.JSONExport" /> 
+    <plugin source="external_interface.js" name="ORYX.Plugins.ExternalInterface" />     
     <properties>
       <property group="File" index="1" />
       <property group="Edit" index="2" />	

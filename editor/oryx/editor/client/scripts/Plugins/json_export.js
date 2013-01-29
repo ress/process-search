@@ -35,6 +35,9 @@ if(!ORYX.Plugins)
 ORYX.Plugins.JSONExport = ORYX.Plugins.AbstractPlugin.extend({
 	construct: function construct(facade) {
 		arguments.callee.$.construct.apply(this, arguments);
+
+        this.facade.registerOnEvent(ORYX.CONFIG.EVENT_EXPORT_JSON, this.JSONExport.bind(this));
+
 		this.facade.offer({
 			'name': ORYX.I18N.JSONExport.name,
 			'functionality': this.JSONExport.bind(this),

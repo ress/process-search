@@ -1075,6 +1075,7 @@ input.text.disabled:hover, input.disabled:hover, select.disabled:hover, textarea
 
 .new-repository-group-header-label {
   font-size: 10px; 
+  line-height: normal;
   color: white; 
   text-shadow: rgba(0, 0, 0, 0.4) 0 -1px 0; 
   -webkit-text-shadow: rgba(0, 0, 0, 0.4) 0 -1px 0; 
