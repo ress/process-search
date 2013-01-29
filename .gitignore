@@ -1,7 +1,7 @@
 .svn
 .DS_Store
-editor/build/
-editor/compiled/
-server/.settings/
-server/.target/
-editor/deploy/
+/editor/build/
+/editor/compiled/
+/server/.settings/
+/server/.target/
+/editor/deploy/
