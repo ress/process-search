@@ -971,7 +971,7 @@ input.text.disabled:hover, input.disabled:hover, select.disabled:hover, textarea
 }
 
 #pwave-repository {
-  position: fixed;
+  position: absolute;
   width: 54px;
   top: 40px;
   background-color:transparent;
@@ -1311,7 +1311,7 @@ input.text.disabled:hover, input.disabled:hover, select.disabled:hover, textarea
 
 .x-toolbar {
   z-index: 10000;
-  position:fixed;
+  position:absolute;
   top:0px;
   left:0px;
   height: 29px;

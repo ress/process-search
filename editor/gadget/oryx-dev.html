@@ -95,7 +95,10 @@
         <link rel="Stylesheet" media="screen" href="../oryx/editor/css/theme_norm.css" type="text/css" />
     </head>
 
-    <body style="display: block; overflow: hidden;">  
+    <body style="display: block; overflow: hidden;">
+        <div id="oryx-canvas" style="width: 700px; margin: auto; margin-top: 100px;">
+        </div>
+
         <script type='text/javascript'>
             var ed;
             var stencilSetName = _getStencilSetName();
@@ -105,7 +108,8 @@
                   'id': 'oryx-canvas',
                   'stencilset': {
                     'url': ORYX.CONFIG.ROOT_PATH + 'editor/data/stencilsets/' + stencilSetName + '/' + stencilSetName + '.json'
-                  }
+                  },
+                  'fullscreen': false
                 });
             }
 

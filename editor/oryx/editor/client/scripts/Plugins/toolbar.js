@@ -94,7 +94,7 @@ ORYX.Plugins.Toolbar = Clazz.extend({
 			this.toolbar = new Ext.ux.SlicedToolbar();
 		var region = this.facade.addToRegion("center", this.toolbar, "Toolbar");
 		//this.canvasContainer = $$(".ORYX_Editor")[0].parentNode;
-		//this.canvasContainer.appendChild(this.toolbar.getEl());
+		//canvasContainer.appendChild(this.toolbar.getEl());
 		}
 		
 		
