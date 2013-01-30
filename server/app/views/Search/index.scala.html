@@ -1,3 +1,4 @@
+@(algorithms: Set[String])
 
 <html>
 <head profile="http://purl.org/NET/erdf/profile">
@@ -19,9 +20,9 @@
     <script src="editor/oryx/editor/lib/jquery-ui-1.8.1.custom/js/jquery-ui-1.8.1.custom.min.js"></script>
 
     <style media="screen" type="text/css">
-        @import url("editor/oryx/editor/lib/ext-2.0.2/resources/css/ext-all.css");
-        @import url("editor/oryx/editor/lib/ext-2.0.2/resources/css/xtheme-gray.css");
-        @import url("editor/oryx/editor/lib/jquery-ui-1.8.1.custom/css/ui-lightness/jquery-ui-1.8.1.custom.css");
+        @@import url("editor/oryx/editor/lib/ext-2.0.2/resources/css/ext-all.css");
+        @@import url("editor/oryx/editor/lib/ext-2.0.2/resources/css/xtheme-gray.css");
+        @@import url("editor/oryx/editor/lib/jquery-ui-1.8.1.custom/css/ui-lightness/jquery-ui-1.8.1.custom.css");
     </style>
 
     <!-- oryx editor -->
@@ -114,6 +115,14 @@
     <div id="oryx-canvas" style="width: 700px; margin: auto; padding: 15px; height: 400px; "></div>
     <div id="error" style="color: red">&nbsp;</div>
     <div id="success" style="color: green">&nbsp;</div>
+    <p>
+    Available algorithms:<br />
+    @for(algorithm <- algorithms) {
+        <label>
+            <input type="radio" name="algorithm" value="@algorithm" checked> @algorithm<br />
+        </label>
+    }
+    </p>
     <button id="search" class="btn btn-large btn-primary"><i class="icon-search"></i> Search</button>
 
     <script type='text/javascript'>
@@ -126,15 +135,16 @@
 
             var model = window.ORYXEditor.getSerializedJSON();
             var params = {
+                algorithm: jQuery("input[name=algorithm]:checked").val(),
                 json: model
             };
 
             var searchRequest = jQuery.ajax({
-            url: "/search",
-            type: "POST",
-            dataType: "json",
-            contentType: "application/json",
-            data: JSON.stringify(params)
+                url: "/search",
+                type: "POST",
+                dataType: "json",
+                contentType: "application/json",
+                data: JSON.stringify(params)
             });
 
             searchRequest.fail(function(jqXHR, textStatus, exception) {

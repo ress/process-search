@@ -146,6 +146,7 @@
                     jQuery("#search i").attr('class', 'icon-search');
                     jQuery("#search").attr('disabled', false);
                     jQuery("#success").html(data.message);
+                    jQuery("#success").html(jQuery("#success").html() + " " + data.models.join(', '));
                 });
 
             });
