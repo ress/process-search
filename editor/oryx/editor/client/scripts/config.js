@@ -30,7 +30,7 @@ if(!ORYX) var ORYX = {};
 if(!ORYX.CONFIG) ORYX.CONFIG = {};
 
 //This is usually the name of the war file!
-ORYX.CONFIG.ROOT_PATH =					document.location.href.substring(0,document.location.href.lastIndexOf("/")) + "/../oryx/";
+ORYX.CONFIG.ROOT_PATH =					document.location.href.substring(0,document.location.href.lastIndexOf("/")) + "/editor/oryx/";
 ORYX.CONFIG.WEB_URL = "http://oryx-project.org";
 ORYX.CONFIG.COLLABORATION = true;
 	
