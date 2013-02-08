@@ -83,7 +83,7 @@ public class QueryingByExample implements SearchAlgorithm {
         NetSystem net = WoflanSerializer.parse(file);
         //NetSystem net = pnml.parse(MODEL_PATH + File.separator + name);
         net.setName(name);
-        Logger.error("Petri-net visualization: https://chart.googleapis.com/chart?cht=gv&chl=" + java.net.URLEncoder.encode(net.toDOT()));
+        Logger.info("Petri-net visualization: https://chart.googleapis.com/chart?cht=gv&chl=" + java.net.URLEncoder.encode(net.toDOT()));
 
 
         return net;

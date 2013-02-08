@@ -17,12 +17,24 @@ public class SearchEngine {
         this.algorithms = new HashMap<>();
 
         // Querying by Example
-        SearchAlgorithm querying = new QueryingByExample();
-        this.algorithms.put(querying.getIdentifier(), querying);
+        //SearchAlgorithm querying = new QueryingByExample();
+        //this.algorithms.put(querying.getIdentifier(), querying);
 
-        // FakeSearch
-        SearchAlgorithm fakeSearch = new FakeSearch();
-        this.algorithms.put(fakeSearch.getIdentifier(), fakeSearch);
+//        // FakeSearch
+//        SearchAlgorithm fakeSearch = new FakeSearch();
+//        this.algorithms.put(fakeSearch.getIdentifier(), fakeSearch);
+//
+//        // Similarity Search
+//        SearchAlgorithm similaritySearch = new SimilaritySearch();
+//        this.algorithms.put(similaritySearch.getIdentifier(), similaritySearch);
+//
+//        // Similarity Search
+//        SearchAlgorithm seqSimilaritySearch = new SeqSimilaritySearch();
+//        this.algorithms.put(seqSimilaritySearch.getIdentifier(), seqSimilaritySearch);
+
+        // Similarity Search
+        SearchAlgorithm rsdSimilaritySearch = new RSDSimilaritySearch();
+        this.algorithms.put(rsdSimilaritySearch.getIdentifier(), rsdSimilaritySearch);
 
         // Initialize the algorithms: loading modules, building indexes, ...
         for (SearchAlgorithm algorithm : algorithms.values()) {

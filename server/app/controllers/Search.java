@@ -67,8 +67,8 @@ public class Search extends Controller {
                 ArrayNode models = response.putArray("models");
                 for (SearchResult result : results) {
                     models.add(result.fileName);
-                    Logger.info("Result file=" + result.fileName + " visualization= " + result.model.toString());
-                    Logger.error("Petri-net visualization: https://chart.googleapis.com/chart?cht=gv&chl=" + java.net.URLEncoder.encode(result.model.toDOT()));
+                    //Logger.info("Result file=" + result.fileName + " visualization= " + result.model.toString());
+                    //Logger.error("Petri-net visualization: https://chart.googleapis.com/chart?cht=gv&chl=" + java.net.URLEncoder.encode(result.model.toDOT()));
                 }
             } catch (Exception e) {
                 Logger.error("Error while searching", e);
