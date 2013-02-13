@@ -67,7 +67,7 @@ public class RSDSimilaritySearch extends SimilaritySearch {
     public ArrayList<SearchResult> search(NetSystem processModel) {
         ArrayList<SearchResult> results = new ArrayList<>();
 
-        IDatapoint query = new RelSetDatapoint(RelSetCreatorUnfolding.getInstance().deriveRelationSet(processModel, 1));
+        IDatapoint query = new RelSetDatapoint(RelSetCreatorUnfolding.getInstance().deriveRelationSet(processModel));
         query.setId("Query-" + UUID.randomUUID().toString());
 
         SortedSet<ResultData> intermediateResults = new TreeSet<>();
@@ -101,7 +101,7 @@ public class RSDSimilaritySearch extends SimilaritySearch {
             }
 
             // deriveRelationSet(net, 1) derives relation sets with a lookahead of 1, i.e., alpha relations
-            relsetdp = new RelSetDatapoint(RelSetCreatorUnfolding.getInstance().deriveRelationSet(net, 1));
+            relsetdp = new RelSetDatapoint(RelSetCreatorUnfolding.getInstance().deriveRelationSet(net));
             relsetdp.setId(modelFileName);
 
         } catch (Exception e) {
