@@ -1,7 +1,9 @@
-package models;
+package models.algorithms.querying;
 
 import de.uni_potsdam.hpi.bpt.qbe.index.RelationCacheRecord;
 import de.uni_potsdam.hpi.bpt.qbe.index.RelationInvertedIndex;
+import models.SearchAlgorithm;
+import models.SearchResult;
 import org.jbpt.petri.NetSystem;
 import org.jbpt.petri.io.WoflanSerializer;
 import play.Logger;
@@ -12,11 +14,7 @@ import java.util.ArrayList;
 import java.util.Set;
 
 /**
- * Created with IntelliJ IDEA.
- * User: bart
- * Date: 30.01.13
- * Time: 20:58
- * To change this template use File | Settings | File Templates.
+ * Querying by Example implementation
  */
 public class QueryingByExample implements SearchAlgorithm {
     private String MODEL_PATH = "/Users/bart/Projekte/MA/EfficientSimilaritySearch/comin2011/tpn";
@@ -24,7 +22,7 @@ public class QueryingByExample implements SearchAlgorithm {
 
     @Override
     public String getIdentifier() {
-        return this.getClass().getSimpleName();
+        return "Querying by Example";
     }
 
     @Override
@@ -79,12 +77,9 @@ public class QueryingByExample implements SearchAlgorithm {
             return null;
         }
 
-        //PNMLSerializer pnml = new PNMLSerializer();
         NetSystem net = WoflanSerializer.parse(file);
-        //NetSystem net = pnml.parse(MODEL_PATH + File.separator + name);
         net.setName(name);
         Logger.info("Petri-net visualization: https://chart.googleapis.com/chart?cht=gv&chl=" + java.net.URLEncoder.encode(net.toDOT()));
-
 
         return net;
     }

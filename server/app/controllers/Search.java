@@ -66,7 +66,11 @@ public class Search extends Controller {
 
                 ArrayNode models = response.putArray("models");
                 for (SearchResult result : results) {
-                    models.add(result.fileName);
+                    ObjectNode model = Json.newObject();
+                    model.put("filename", result.fileName);
+                    model.put("dot", result.model.toDOT());
+                    model.put("score", result.score);
+                    models.add(model);
                     //Logger.info("Result file=" + result.fileName + " visualization= " + result.model.toString());
                     //Logger.error("Petri-net visualization: https://chart.googleapis.com/chart?cht=gv&chl=" + java.net.URLEncoder.encode(result.model.toDOT()));
                 }

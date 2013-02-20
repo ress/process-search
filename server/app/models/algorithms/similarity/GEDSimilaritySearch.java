@@ -1,6 +1,8 @@
-package models;
+package models.algorithms.similarity;
 
 import de.uni_potsdam.hpi.bpt.qbe.index.RelationInvertedIndex;
+import models.SearchAlgorithm;
+import models.SearchResult;
 import models.simsearch.ExperimentMetric;
 import models.simsearch.IDatapoint;
 import models.simsearch.SimpleGraphDatapoint;
@@ -35,7 +37,7 @@ import java.util.*;
  * Time: 13:00
  * To change this template use File | Settings | File Templates.
  */
-public class SimilaritySearch implements SearchAlgorithm
+public class GEDSimilaritySearch implements SearchAlgorithm
 {
     public MTree tree;
     public ExperimentMetric metric;
@@ -50,7 +52,7 @@ public class SimilaritySearch implements SearchAlgorithm
 
     @Override
     public String getIdentifier() {
-        return "SimilaritySearch";
+        return "GEDSimilaritySearch";
     }
 
     public ExperimentMetric getMetric() {

@@ -1,5 +1,6 @@
-package models;
+package models.algorithms.similarity;
 
+import models.SearchResult;
 import models.simsearch.IDatapoint;
 import models.simsearch.SimpleGraphDatapoint;
 import org.jbpt.petri.NetSystem;
@@ -9,14 +10,7 @@ import java.util.Iterator;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-/**
- * Created with IntelliJ IDEA.
- * User: bart
- * Date: 07.02.13
- * Time: 23:16
- * To change this template use File | Settings | File Templates.
- */
-public class SeqSimilaritySearch extends SimilaritySearch {
+public class SeqGEDSimilaritySearch extends GEDSimilaritySearch {
     private class ResultData implements Comparable {
 
         public Double distance = -1.0;
@@ -40,7 +34,7 @@ public class SeqSimilaritySearch extends SimilaritySearch {
 
     @Override
     public String getIdentifier() {
-        return "SeqSimilaritySearch";
+        return "SeqGEDSimilaritySearch";
     }
 
     @Override

@@ -27,4 +27,8 @@ public class SimpleGraphDatapoint extends SimpleGraph implements IDatapoint{
     public void setId(String id) {
         this.dp_id = id;
     }
+
+    public NetSystem getModel() {
+        return null;
+    }
 }

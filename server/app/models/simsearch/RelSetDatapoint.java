@@ -39,6 +39,5 @@ public class RelSetDatapoint extends RelSet<NetSystem, Node> implements IDatapoi
     public void setId(String id) {
         this.dp_id = id;
     }
-
 }
 

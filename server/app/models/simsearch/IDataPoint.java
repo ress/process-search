@@ -1,5 +1,7 @@
 package models.simsearch;
 
+import org.jbpt.petri.NetSystem;
+
 /**
  * Created with IntelliJ IDEA.
  * User: bart
@@ -10,5 +12,6 @@ package models.simsearch;
 public interface IDatapoint {
     public void setId(String Id);
     public String getId();
+    public NetSystem getModel();
 //	public boolean equals(IDatapoint other);
 }

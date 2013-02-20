@@ -5,3 +5,7 @@
 /server/.settings/
 /server/.target/
 /editor/deploy/
+/browser-diagrams/
+/server/public/build/
+/server/public/contentloaded/
+/server/public/xdot/

@@ -1,5 +1,9 @@
 package models;
 
+import models.algorithms.querying.QueryingByExample;
+import models.algorithms.similarity.BpSimilaritySearch;
+import models.algorithms.similarity.SeqBpSimilaritySearch;
+
 import java.util.HashMap;
 import java.util.Set;
 
@@ -17,29 +21,35 @@ public class SearchEngine {
         this.algorithms = new HashMap<>();
 
         // Querying by Example
-        //SearchAlgorithm querying = new QueryingByExample();
-        //this.algorithms.put(querying.getIdentifier(), querying);
+        SearchAlgorithm querying = new QueryingByExample();
+        this.algorithms.put(querying.getIdentifier(), querying);
 
 //        // FakeSearch
 //        SearchAlgorithm fakeSearch = new FakeSearch();
 //        this.algorithms.put(fakeSearch.getIdentifier(), fakeSearch);
 //
 //        // Similarity Search
-//        SearchAlgorithm similaritySearch = new SimilaritySearch();
+//        SearchAlgorithm similaritySearch = new GEDSimilaritySearch();
 //        this.algorithms.put(similaritySearch.getIdentifier(), similaritySearch);
 //
 //        // Similarity Search
-//        SearchAlgorithm seqSimilaritySearch = new SeqSimilaritySearch();
+//        SearchAlgorithm seqSimilaritySearch = new SeqGEDSimilaritySearch();
 //        this.algorithms.put(seqSimilaritySearch.getIdentifier(), seqSimilaritySearch);
 
-        // Similarity Search
-        SearchAlgorithm rsdSimilaritySearch = new RSDSimilaritySearch();
-        this.algorithms.put(rsdSimilaritySearch.getIdentifier(), rsdSimilaritySearch);
+        // Similarity Search (Behavior Profile based, sequential search)
+        this.addSearchAlgorithm(new SeqBpSimilaritySearch());
+
+        // Similarity Search (Behavior Profile based, indexed)
+        this.addSearchAlgorithm(new BpSimilaritySearch());
 
         // Initialize the algorithms: loading modules, building indexes, ...
         for (SearchAlgorithm algorithm : algorithms.values()) {
             algorithm.initialize();
         }
+    }
+
+    private void addSearchAlgorithm(SearchAlgorithm algorithm) {
+        this.algorithms.put(algorithm.getIdentifier(), algorithm);
     }
 
     public Set<String> getAlgorithmIdentifiers() {

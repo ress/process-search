@@ -12,9 +12,15 @@ import org.jbpt.petri.NetSystem;
 public class SearchResult {
     public String fileName;
     public NetSystem model;
+    public double score;
 
     public SearchResult(String fileName, NetSystem model) {
+        this(fileName, model, -1);
+    }
+
+    public SearchResult(String fileName, NetSystem model, double score) {
         this.fileName = fileName;
         this.model = model;
+        this.score = score;
     }
 }

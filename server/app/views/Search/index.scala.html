@@ -108,9 +108,86 @@
 
     <!-- FontAwesome -->
     <link href="editor/gadget/fontawesome/font-awesome.min.css" rel="stylesheet" />
+
+    <!-- D3 and dagre -->
+    <script type="text/javascript" src="/assets/javascripts/d3.js"></script>
+    <script type="text/javascript" src="/assets/javascripts/dagre.js"></script>
+
+    <!-- Handlebars -->
+    <script type="text/javascript" src="/assets/javascripts/handlebars.js"></script>
+
+    <!-- Processgraph -->
+    <script type="text/javascript" src="/assets/javascripts/processgraph.js"></script>
+
+    <style type="text/css">
+        .result {
+            margin: 20px
+        }
+
+        .graph {
+            border: 1px solid black;
+            width: 600px;
+            height: 400px;
+        }
+        .graph text {
+        font: 300 16px "Helvetica Neue";
+        }
+
+        .graph rect {
+        fill: #fff;
+        }
+
+        .graph circle {
+        stroke: #000;
+        fill: #fff;
+        }
+
+        .node > rect {
+        stroke-width: 3px;
+        stroke: #333;
+        fill: none;
+        }
+
+        .label > rect {
+        fill: none;
+        }
+
+        .node:hover {
+        cursor: pointer;
+        opacity: 0.4;
+        }
+
+        .edge rect {
+        fill: #fff
+        }
+
+        .edge path {
+        fill: none;
+        stroke: #333;
+        stroke-width: 1.5px;
+        }
+
+        .edge:hover {
+        cursor: pointer;
+        opacity: 0.4;
+        }
+    </style>
+
+    <script id="results-template" type="text/x-handlebars-template">
+        {{#each models}}
+        <div class="result">
+            <h2>{{ filename }}</h2>
+            <p>Distance: {{ score }}</p>
+            <div class="dot" style="display: none">
+                {{ dot }}
+            </div>
+            <svg class="graph" id="graph-{{ @@index }}"></svg>
+        </div>
+        {{/each}}
+     </script>
 </head>
 
-<body style="display: block; overflow: hidden; text-align: center;">
+<body style="text-align: center;">
     <h1>Process Search</h1>
     <div id="oryx-canvas" style="width: 700px; margin: auto; padding: 15px; height: 400px; "></div>
     <div id="error" style="color: red">&nbsp;</div>
@@ -119,11 +196,13 @@
     Available algorithms:<br />
     @for(algorithm <- algorithms) {
         <label>
-            <input type="radio" name="algorithm" value="@algorithm" checked> @algorithm<br />
+            <input type="radio" name="algorithm" value="@algorithm" checked="checked" /> @algorithm<br />
         </label>
     }
     </p>
     <button id="search" class="btn btn-large btn-primary"><i class="icon-search"></i> Search</button>
+
+    <div id="results"></div>
 
     <script type='text/javascript'>
         jQuery("#search").click(function() {
@@ -158,6 +237,16 @@
                 jQuery("#search").attr('disabled', false);
                 jQuery("#success").html(data.message);
                 jQuery("#success").html(jQuery("#success").html() + " " + data.models.join(', '));
+                //if (data.models.length > 0) {
+                //    var canvas = new Canviz("canviz", "/assets/xdot/" + data.models[0]);
+                //}
+
+                var template = Handlebars.compile(jQuery("#results-template").html())
+                jQuery("#results").html(template(data));
+
+                for (var i = 0; i < data.models.length; i++) {
+                    new PetriNetGraph(data.models[i].dot, "#graph-" + i);
+                }
             });
         });
     </script>
