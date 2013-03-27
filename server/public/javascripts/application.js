@@ -32,33 +32,21 @@ function _getStencilSetName() {
     return stencilSetName;
 }
 
+angular.module('searchModule', []);
 
-angular.module('searchModule', [], function($provide) {
-    $provide.factory('processSearch', function() {
-       var selectedAlgorithm;
-       var search = {};
-
-       search.algorithms = [
+function SearchCtrl($scope, $window, $http) {
+    $scope.time = 0;
+    $scope.results = [];
+    $scope.algorithms = [
            { name: 'Querying by Example', short: 'qbe' },
            { name: 'Similarity Search', short: 'simsearch' }
        ];
+    $scope.algorithm = $scope.algorithms[0].name;
 
-       search.setAlgorithm = function(algorithm) {
-           selectedAlgorithm = algorithm;
-       };
-
-       selectedAlgorithm = search.algorithms[1].name;
-       search.time = 0;
-       search.results = [];
-       return search;
-    });
-});
-
-function SearchCtrl($scope, $window, $http, processSearch) {
     $scope.search = function() {
         var model = $window.ORYXEditor.getSerializedJSON();
         var params = {
-            algorithm: processSearch.algorithm,
+            algorithm: $scope.algorithm,
             json: model
         };
 
@@ -67,8 +55,8 @@ function SearchCtrl($scope, $window, $http, processSearch) {
         $http({ method: 'POST', url: '/search', data: params})
             .success(function(data) {
 
-                processSearch.results = data.models;
-                processSearch.time = data.time;
+                $scope.results = data.models;
+                $scope.time = data.time;
 
                 setTimeout(function() {
                     window.scrollTo(0,jQuery(".searchbar-container").height() + 20);
@@ -83,29 +71,4 @@ function SearchCtrl($scope, $window, $http, processSearch) {
     };
 }
 
-function ResultsCtrl($scope, processSearch) {
-    $scope.$watch(function() { return processSearch.time; }, function(time) {
-        $scope.time = time;
-    });
-
-    $scope.$watch(function() { return processSearch.results; }, function(results) {
-        $scope.results = results;
-    });
-};
-
-function AlgorithmCtrl($scope, processSearch) {
-    //$scope.algorithms = processSearch.algorithms;
-    $scope.$watch(function() { return processSearch.algorithms; }, function(algorithms) {
-        $scope.algorithms = algorithms;
-    });
-
-    $scope.$watch(function() { return processSearch.algorithm; }, function(algorithm) {
-        $scope.algorithmSelected = algorithm;
-    });
-
-    $scope.$watch('algorithmSelected', function(algorithmSelected) {
-        processSearch.algorithm = algorithmSelected;
-    });
-};
-
-AlgorithmCtrl.$inject = ['$scope', 'processSearch'];
+SearchCtrl.$inject = ['$scope', '$window', '$http'];
