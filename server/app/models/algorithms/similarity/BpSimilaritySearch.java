@@ -1,11 +1,14 @@
 package models.algorithms.similarity;
 
+import models.Repository;
 import models.SearchResult;
 import models.algorithms.similarity.GEDSimilaritySearch;
 import models.simsearch.*;
 import models.simsearch.metrics.RSD;
+import org.jbpt.bp.RelSet;
 import org.jbpt.bp.construct.RelSetCreatorUnfolding;
 import org.jbpt.petri.NetSystem;
+import org.jbpt.petri.Node;
 import org.jbpt.petri.io.WoflanSerializer;
 import play.Logger;
 import xxl.core.collections.queues.DynamicHeap;
@@ -25,10 +28,18 @@ import java.util.*;
  */
 public class BpSimilaritySearch extends GEDSimilaritySearch {
     protected final String MODEL_PATH = "/Users/bart/Projekte/MA/EfficientSimilaritySearch/comin2011/tpn";
+    protected Repository<RelSet<NetSystem, Node>> repository;
+
+    @Override
+    public void initialize() {
+        repository = new Repository<>("/tmp/bpsimsearch.repo");
+        super.initialize();
+        repository.save();
+    }
 
     @Override
     public String getIdentifier() {
-        return "BP Similarity Search (indexed)";
+        return "Similarity Search";
     }
 
     @Override
@@ -85,16 +96,23 @@ public class BpSimilaritySearch extends GEDSimilaritySearch {
         RelSetDatapoint relsetdp = null;
 
         try {
-            NetSystem net = WoflanSerializer.parse(new File(this.MODEL_PATH + "/" + modelFileName));
-            Logger.info("Petri-net visualization: https://chart.googleapis.com/chart?cht=gv&chl=" + java.net.URLEncoder.encode(net.toDOT()));
-            if (net == null) {
-                throw new RuntimeException("Unable to load model: " + modelFileName);
+            RelSet<NetSystem, Node> relset = null;
+            if (repository.contains(modelFileName)) {
+                relset = repository.get(modelFileName);
+            } else {
+                NetSystem net = WoflanSerializer.parse(new File(this.MODEL_PATH + "/" + modelFileName));
+                Logger.info("Petri-net visualization: https://chart.googleapis.com/chart?cht=gv&chl=" + java.net.URLEncoder.encode(net.toDOT()));
+                if (net == null) {
+                    throw new RuntimeException("Unable to load model: " + modelFileName);
+                }
+
+                // deriveRelationSet(net, 1) derives relation sets with a lookahead of 1, i.e., alpha relations
+                relset = RelSetCreatorUnfolding.getInstance().deriveRelationSet(net);
+                repository.put(modelFileName, relset);
             }
 
-            // deriveRelationSet(net, 1) derives relation sets with a lookahead of 1, i.e., alpha relations
-            relsetdp = new RelSetDatapoint(RelSetCreatorUnfolding.getInstance().deriveRelationSet(net));
+            relsetdp = new RelSetDatapoint(relset);
             relsetdp.setId(modelFileName);
-
         } catch (Exception e) {
             e.printStackTrace();
         }

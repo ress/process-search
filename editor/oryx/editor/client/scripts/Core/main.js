@@ -142,6 +142,12 @@ ORYX.Editor = {
             this.fullscreen = true;
         else
             this.fullscreen = model.fullscreen;
+
+        // Defines if the editor should be fullscreen or not
+        if (typeof model.height === "undefined")
+            this.height = 400;
+        else
+            this.height = model.height;
         
         // Initialize the eventlistener
         this._initEventListener();
@@ -285,7 +291,7 @@ ORYX.Editor = {
         // default, a non-fullscreen editor shall define its height by layout.setHeight(int) 
         
         // Defines the layout hight if it's NOT fullscreen
-        var layoutHeight    = 400;
+        var layoutHeight    = this.height;
     
         var canvasParent    = this.getCanvas().rootNode.parentNode;
 

@@ -113,6 +113,7 @@
 
     PetriNetGraph.prototype.addLabels = function(selection) {
         var labelGroup = selection
+            //.filter(function(d) { return d.shape != "circle"; })
             .append("g")
             .attr("class", "label");
         labelGroup.append("rect");

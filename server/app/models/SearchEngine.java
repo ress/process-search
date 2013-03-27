@@ -37,7 +37,7 @@ public class SearchEngine {
 //        this.algorithms.put(seqSimilaritySearch.getIdentifier(), seqSimilaritySearch);
 
         // Similarity Search (Behavior Profile based, sequential search)
-        this.addSearchAlgorithm(new SeqBpSimilaritySearch());
+        //this.addSearchAlgorithm(new SeqBpSimilaritySearch());
 
         // Similarity Search (Behavior Profile based, indexed)
         this.addSearchAlgorithm(new BpSimilaritySearch());

@@ -37,6 +37,7 @@ public class Search extends Controller {
 
     @BodyParser.Of(BodyParser.Json.class)
     public static Result search() {
+        long startTime = System.nanoTime();
         ObjectNode response = Json.newObject();
         RequestBody body = request().body();
         if (engine == null) {
@@ -62,6 +63,9 @@ public class Search extends Controller {
                 }
 
                 ArrayList<SearchResult> results = searchAlgorithm.search(net);
+                long estimatedTime = System.nanoTime() - startTime;
+
+                response.put("time", estimatedTime);
                 response.put("message", results.size() + " model(s) found.");
 
                 ArrayNode models = response.putArray("models");

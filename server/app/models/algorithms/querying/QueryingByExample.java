@@ -2,9 +2,12 @@ package models.algorithms.querying;
 
 import de.uni_potsdam.hpi.bpt.qbe.index.RelationCacheRecord;
 import de.uni_potsdam.hpi.bpt.qbe.index.RelationInvertedIndex;
+import models.Repository;
 import models.SearchAlgorithm;
 import models.SearchResult;
+import org.jbpt.bp.MinimalKSuccessorRelation;
 import org.jbpt.petri.NetSystem;
+import org.jbpt.petri.Node;
 import org.jbpt.petri.io.WoflanSerializer;
 import play.Logger;
 
@@ -19,6 +22,7 @@ import java.util.Set;
 public class QueryingByExample implements SearchAlgorithm {
     private String MODEL_PATH = "/Users/bart/Projekte/MA/EfficientSimilaritySearch/comin2011/tpn";
     private RelationInvertedIndex index;
+    protected Repository<MinimalKSuccessorRelation<NetSystem, Node>> repository;
 
     @Override
     public String getIdentifier() {
@@ -27,6 +31,8 @@ public class QueryingByExample implements SearchAlgorithm {
 
     @Override
     public void initialize() {
+        repository = new Repository<>("/tmp/qbe.repo");
+
         try {
             index = new RelationInvertedIndex();
 
@@ -37,15 +43,29 @@ public class QueryingByExample implements SearchAlgorithm {
             Logger.info("Starting to load process models");
             for (String filename : dir.list()) {
                 if (filename.matches(".*tpn")) {
-                    NetSystem model = this.loadModel(filename);
-                    if (model != null) {
-                        index.addNet(model);
-                        this.index.setNetId(model, filename);
-                        Logger.info("Loaded one");
+                    MinimalKSuccessorRelation<NetSystem, Node> minK = null;
+
+                    // If possible, load MinKSuccessorRelation from disk, otherwise
+                    // parse it and cache it for the future.
+                    if (repository.contains(filename)) {
+                        minK = repository.get(filename);
+                    } else {
+                        NetSystem model = this.loadModel(filename);
+                        if (model != null) {
+                             minK = new MinimalKSuccessorRelation<NetSystem, Node>(model);
+                            repository.put(filename, minK);
+                        }
                     }
+
+                    if (minK != null) {
+                        this.index.addRelation(minK);
+                    }
+                    Logger.info("Loaded one: " + filename);
                 }
             }
             Logger.info("Finished loading process models");
+
+            repository.save();
         } catch (Exception e) {
             Logger.error("Could not load models", e);
         }
@@ -69,8 +89,6 @@ public class QueryingByExample implements SearchAlgorithm {
 
     private NetSystem loadModel(String name) {
         // remove possibly trailing / (\)
-        MODEL_PATH = MODEL_PATH.replaceAll(File.separator + "$", "");
-
         File file = new File(MODEL_PATH + File.separator + name);
 
         if (!file.exists()) {
@@ -79,7 +97,8 @@ public class QueryingByExample implements SearchAlgorithm {
 
         NetSystem net = WoflanSerializer.parse(file);
         net.setName(name);
-        Logger.info("Petri-net visualization: https://chart.googleapis.com/chart?cht=gv&chl=" + java.net.URLEncoder.encode(net.toDOT()));
+        net.setId(name);
+        //Logger.info("Petri-net visualization: https://chart.googleapis.com/chart?cht=gv&chl=" + java.net.URLEncoder.encode(net.toDOT()));
 
         return net;
     }

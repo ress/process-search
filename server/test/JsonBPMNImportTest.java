@@ -15,7 +15,7 @@ import static org.fest.assertions.Assertions.*;
 
 public class JsonBpmnImportTest {
 
-    @Test
+    /*@Test
     public void simpleCheck() {
         int a = 1 + 1;
         assertThat(a).isEqualTo(2);
@@ -57,5 +57,5 @@ public class JsonBpmnImportTest {
 
         ProcessModel bp = BusinessProcess.fromJsonString(jsonModel);
         assertThat(bp).isNotNull();
-    }
+    }     */
 }

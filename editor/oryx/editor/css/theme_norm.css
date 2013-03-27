@@ -973,7 +973,7 @@ input.text.disabled:hover, input.disabled:hover, select.disabled:hover, textarea
 #pwave-repository {
   position: absolute;
   width: 54px;
-  top: 40px;
+  top: 18px;
   background-color:transparent;
 }
 

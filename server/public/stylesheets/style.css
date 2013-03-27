@@ -1,0 +1,100 @@
+.searchbar-container {
+  background-color: #F5F5F5;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.searchbar {
+  width: 700px;
+  height: 355px;
+  margin-left: -20px;
+}
+
+.preferences {
+}
+
+.preferences h5 {
+  color: #1E90FF;
+}
+
+.preferences .preference-set {
+  padding-left: 10px;
+}
+
+/* Results styling */
+
+.result {
+  margin: 20px;
+  padding: 20px;
+  background-color: #EFF8FB;
+}
+
+.result:hover {
+  background-color: #CEECF5;
+}
+
+.result-index {
+  font-size: 24px;
+}
+
+.result-details {
+    text-align: right;
+    font-size: 12px;
+}
+
+.graph {
+  border: 1px solid black;
+  width: 100%;
+  height: 300px;
+}
+.graph text {
+  font: 300 16px "Helvetica Neue";
+}
+
+.graph rect {
+  fill: #fff;
+}
+
+.graph circle {
+  stroke: #000;
+  fill: #fff;
+}
+
+.node > rect {
+  stroke-width: 3px;
+  stroke: #333;
+  fill: none;
+}
+
+.label > rect {
+  fill: none;
+}
+
+.node:hover {
+  cursor: pointer;
+  opacity: 0.4;
+}
+
+.edge rect {
+  fill: #fff
+}
+
+.edge path {
+  fill: none;
+  stroke: #333;
+  stroke-width: 1.5px;
+}
+
+.edge:hover {
+  cursor: pointer;
+  opacity: 0.4;
+}
+
+.cp {
+    opacity: 0;
+}
+
+.cp:hover {
+    cursor:pointer;
+    opacity: 1;
+}
