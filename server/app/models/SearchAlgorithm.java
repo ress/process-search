@@ -4,6 +4,7 @@ import org.jbpt.petri.NetSystem;
 import org.jbpt.pm.ProcessModel;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created with IntelliJ IDEA.
@@ -14,6 +15,9 @@ import java.util.ArrayList;
  */
 public interface SearchAlgorithm {
     public String getIdentifier();
+    public ArrayList<Object> getAvailableParameters();
+    public HashMap<String, Object> getParameters();
     public void initialize();
+    public void initialize(HashMap<String, Object> parameters);
     public ArrayList<SearchResult> search(NetSystem processModel);
 }

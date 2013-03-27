@@ -60,6 +60,16 @@ public class GEDSimilaritySearch implements SearchAlgorithm
     }
 
     @Override
+    public ArrayList<Object> getAvailableParameters() {
+        return new ArrayList<>();
+    }
+
+    @Override
+    public HashMap<String, Object> getParameters() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
     public void initialize() {
         this.metric = this.getMetric();
 
@@ -95,6 +105,11 @@ public class GEDSimilaritySearch implements SearchAlgorithm
         }
 
 
+    }
+
+    @Override
+    public void initialize(HashMap<String, Object> parameters) {
+        initialize();
     }
 
     @Override

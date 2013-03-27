@@ -1,10 +1,13 @@
 package models;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.HashMultimap;
 import models.algorithms.querying.QueryingByExample;
 import models.algorithms.similarity.BpSimilaritySearch;
 import models.algorithms.similarity.SeqBpSimilaritySearch;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -15,10 +18,10 @@ import java.util.Set;
  * To change this template use File | Settings | File Templates.
  */
 public class SearchEngine {
-    public HashMap<String, SearchAlgorithm> algorithms;
+    public ArrayListMultimap<String, SearchAlgorithm> algorithms;
 
     public SearchEngine() {
-        this.algorithms = new HashMap<>();
+        this.algorithms = ArrayListMultimap.create();
 
         // Querying by Example
         SearchAlgorithm querying = new QueryingByExample();
@@ -56,7 +59,35 @@ public class SearchEngine {
         return this.algorithms.keySet();
     }
 
+    public SearchAlgorithm buildSearchAlgorithm(String algorithm, HashMap<String, Object> parameters) {
+        SearchAlgorithm searchAlgorithm;
+        if (algorithm.equals("Querying by Example")) {
+            searchAlgorithm = new QueryingByExample();
+        } else if (algorithm.equals("Similarity Search")) {
+            searchAlgorithm = new BpSimilaritySearch();
+        } else {
+            return null;
+        }
+
+        searchAlgorithm.initialize(parameters);
+        addSearchAlgorithm(searchAlgorithm);
+
+        return searchAlgorithm;
+    }
+
     public SearchAlgorithm getAlgorithm(String algorithm) {
-        return this.algorithms.get(algorithm);
+        return this.algorithms.get(algorithm).get(0);
+    }
+
+    public SearchAlgorithm getAlgorithm(String algorithm, HashMap<String, Object> parameters) {
+        List<SearchAlgorithm> searchAlgorithms = this.algorithms.get(algorithm);
+        for (SearchAlgorithm searchAlgorithm : searchAlgorithms) {
+            if (searchAlgorithm.getParameters().equals(parameters)) {
+                return searchAlgorithm;
+            }
+        }
+
+        // Didn't find one, so create a new one
+        return buildSearchAlgorithm(algorithm, parameters);
     }
 }

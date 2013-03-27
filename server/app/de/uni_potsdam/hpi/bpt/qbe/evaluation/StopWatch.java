@@ -79,6 +79,17 @@ public class StopWatch {
 	public Long last() {
 		return get(-1);
 	}
+
+    /**
+     * Get the number of recorded laps
+     *
+     * @return
+     */
+    public Integer numLaps() {
+        return this.laps.size();
+    }
+
+
 	
 	/**
 	 * Create an Aggregate from the measured times to obtain min, max, median, etc.

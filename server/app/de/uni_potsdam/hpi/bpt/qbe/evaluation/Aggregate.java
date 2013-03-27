@@ -167,7 +167,10 @@ public class Aggregate<T extends Number> extends ArrayList<T> implements List<T>
 	 * @return
 	 */
 	public double variance() {
-		
+
+       if (this.size() <= 1)
+           return 0;
+
 		double avg = this.avg();
 		double var = 0;
 		

@@ -2,9 +2,11 @@ package models.algorithms.querying;
 
 import de.uni_potsdam.hpi.bpt.qbe.index.RelationCacheRecord;
 import de.uni_potsdam.hpi.bpt.qbe.index.RelationInvertedIndex;
+import models.Measurement;
 import models.Repository;
 import models.SearchAlgorithm;
 import models.SearchResult;
+import models.algorithms.querying.closeness.Closeness;
 import org.jbpt.bp.MinimalKSuccessorRelation;
 import org.jbpt.petri.NetSystem;
 import org.jbpt.petri.Node;
@@ -14,6 +16,7 @@ import play.Logger;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Set;
 
 /**
@@ -27,6 +30,16 @@ public class QueryingByExample implements SearchAlgorithm {
     @Override
     public String getIdentifier() {
         return "Querying by Example";
+    }
+
+    @Override
+    public ArrayList<Object> getAvailableParameters() {
+        return new ArrayList<>();
+    }
+
+    @Override
+    public HashMap<String, Object> getParameters() {
+        return new HashMap<>();
     }
 
     @Override
@@ -72,14 +85,24 @@ public class QueryingByExample implements SearchAlgorithm {
     }
 
     @Override
+    public void initialize(HashMap<String, Object> parameters) {
+        initialize();
+    }
+
+    @Override
     public ArrayList<SearchResult> search(NetSystem processModel) {
         ArrayList<SearchResult> results = new ArrayList<>();
 
         try {
+            Measurement.start("QueryingByExample.search");
             Set<RelationCacheRecord> foundModels = index.search(processModel);
             for (RelationCacheRecord model : foundModels) {
-                results.add(new SearchResult(model.getFile(), model.getNet()));
+                Measurement.start("QueryingByExample.search.computeCloseness");
+                double closeness = Closeness.compute(processModel, model.getNet());
+                Measurement.stop("QueryingByExample.search.computeCloseness");
+                results.add(new SearchResult(model.getFile(), model.getNet(), closeness));
             }
+            Measurement.stop("QueryingByExample.search");
 
             return results;
         } catch (IOException e) {
@@ -95,7 +118,9 @@ public class QueryingByExample implements SearchAlgorithm {
             return null;
         }
 
+        Measurement.start("QueryingByExample.parseTpn", true);
         NetSystem net = WoflanSerializer.parse(file);
+        Measurement.stop("QueryingByExample.parseTpn", true);
         net.setName(name);
         net.setId(name);
         //Logger.info("Petri-net visualization: https://chart.googleapis.com/chart?cht=gv&chl=" + java.net.URLEncoder.encode(net.toDOT()));

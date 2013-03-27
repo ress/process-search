@@ -35,6 +35,20 @@
             edge.target.inEdges.push(edge);
         });
 
+        graph.nodes.forEach(function(node) {
+            if (node.shape == "circle") {
+                if (node.inEdges.length == 0) {
+                    node.label = "       •   ";
+                } else {
+                    node.label = '<div style="font-family: AdobeBlank; height: 32px">blank0</div>';
+                }
+            }
+            if (node.label.match(/\d+_transition/)) {
+                node.label = '-';
+                node.style = "font-family: AdobeBlank";
+            }
+        })
+
         return graph;
     };
 
@@ -57,6 +71,8 @@
         var circles = nodeEnter.filter(function(d) { return d.shape == "circle"; });
         boxes.append("rect");
         circles.append("circle").attr("r", "20");
+        circles.filter(function(d) { return d.outEdges == 0 }).attr("stroke-width", "4");
+
         this.addLabels(nodeEnter);
         this.nodes.exit().remove();
 
@@ -130,6 +146,9 @@
         labelGroup
             .filter(function(d) { return d.label[0] !== "<"; })
             .append("text")
+            .attr("style", function(d) { if (typeof d.style != undefined) return d.style; else return ""; });
+
+
     };
 
     PetriNetGraph.prototype.recalcLabels = function() {

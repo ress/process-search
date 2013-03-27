@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import models.Measurement;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.WhitespaceAnalyzer;
 import org.apache.lucene.document.Document;
@@ -219,12 +220,10 @@ public class RelationInvertedIndex {
 	}
 	
 	public Set<RelationCacheRecord> search(KSuccessorRelation<NetSystem, Node> rel) throws /* CorruptIndexException, */ IOException {
-		
-		
-		
+        Measurement.start("QueryingByExample.search.lucene");
 		List<String> keywords = RelationAnalyzer.parseKeywords(this.analyzer, RelationAnalyzer.extractTokens(rel));
 
-//Logger.getGlobal().info("QUERY    " + rel.getNet().getId() + " : " + keywords);		
+        //Logger.getGlobal().info("QUERY    " + rel.getNet().getId() + " : " + keywords);
 		
 		// build query
 		BooleanQuery q = new BooleanQuery();
@@ -253,6 +252,8 @@ public class RelationInvertedIndex {
 	    // searcher can only be closed when there
 	    // is no need to access the documents any more.
 	    searcher.close();
+
+        Measurement.stop("QueryingByExample.search.lucene");
 	    
 	    return result;
 	}

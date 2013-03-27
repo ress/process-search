@@ -35,19 +35,37 @@ function _getStencilSetName() {
 angular.module('searchModule', []);
 
 function SearchCtrl($scope, $window, $http) {
-    $scope.time = 0;
-    $scope.results = [];
-    $scope.algorithms = [
-           { name: 'Querying by Example', short: 'qbe' },
-           { name: 'Similarity Search', short: 'simsearch' }
-       ];
-    $scope.algorithm = $scope.algorithms[0].name;
+    $scope.data = {
+        time: 0,
+        results: [],
+        algorithms: [],
+        algorithm: null,
+        parameters: null
+    };
+
+    $http({ method: 'GET', url: '/search/algorithms'})
+        .success(function(data) {
+            $scope.data.algorithms = data['algorithms'];
+            $scope.data.algorithm = $scope.data.algorithms[0].name;
+        });
+
+    $scope.$watch('data.algorithm', function(value) {
+        var algorithm = _.find($scope.data.algorithms, function(algorithm) { return algorithm.name == value; });
+        if (algorithm) {
+            $scope.data.parameters = algorithm.parameters;
+            _.each($scope.data.parameters, function(parameter) {
+                parameter['value'] = parameter['default'];
+            });
+
+        }
+    });
 
     $scope.search = function() {
         var model = $window.ORYXEditor.getSerializedJSON();
         var params = {
-            algorithm: $scope.algorithm,
-            json: model
+            algorithm: $scope.data.algorithm,
+            json: model,
+            parameters: _.object(_.map($scope.data.parameters, function(parameter) { return [parameter.name, parameter.value]; }))
         };
 
         localStorage.setItem("lastModel", model);
@@ -55,8 +73,8 @@ function SearchCtrl($scope, $window, $http) {
         $http({ method: 'POST', url: '/search', data: params})
             .success(function(data) {
 
-                $scope.results = data.models;
-                $scope.time = data.time;
+                $scope.data.results = data.models;
+                $scope.data.time = data.time;
 
                 setTimeout(function() {
                     window.scrollTo(0,jQuery(".searchbar-container").height() + 20);

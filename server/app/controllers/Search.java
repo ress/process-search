@@ -1,13 +1,14 @@
 package controllers;
 
+import de.uni_potsdam.hpi.bpt.qbe.evaluation.Aggregate;
+import de.uni_potsdam.hpi.bpt.qbe.evaluation.StopWatch;
 import de.uni_potsdam.hpi.bpt.qbe.index.RelationCacheRecord;
-import models.BusinessProcess;
-import models.SearchAlgorithm;
-import models.SearchEngine;
-import models.SearchResult;
+import models.*;
 import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
+import org.codehaus.jackson.node.TextNode;
 import org.jbpt.petri.NetSystem;
 import org.jbpt.petri.Place;
 import org.jbpt.pm.ProcessModel;
@@ -20,8 +21,7 @@ import play.mvc.Http.RequestBody;
 import play.mvc.Result;
 import scala.util.parsing.json.JSON;
 
-import java.util.ArrayList;
-import java.util.Set;
+import java.util.*;
 
 public class Search extends Controller {
     static SearchEngine engine;
@@ -35,9 +35,37 @@ public class Search extends Controller {
         return ok(html);
     }
 
+    public static Result clearMeasurements() {
+        Measurement.clearPersistent();
+
+        return ok();
+    }
+
+    public static Result persistMeasurements() {
+        Measurement.setPersist(true);
+        return ok();
+    }
+
+    public static Result algorithms() {
+        if (engine == null) {
+            engine = new SearchEngine();
+        }
+
+        ObjectNode response = Json.newObject();
+        ArrayNode algorithms = response.putArray("algorithms");
+        ObjectMapper om = new ObjectMapper();
+
+        for (String identifier : engine.getAlgorithmIdentifiers()) {
+            ObjectNode algorithm = algorithms.addObject();
+            algorithm.put("name", identifier);
+            algorithm.put("parameters", om.valueToTree(engine.getAlgorithm(identifier).getAvailableParameters()));
+        }
+
+        return ok(response);
+    }
+
     @BodyParser.Of(BodyParser.Json.class)
     public static Result search() {
-        long startTime = System.nanoTime();
         ObjectNode response = Json.newObject();
         RequestBody body = request().body();
         if (engine == null) {
@@ -49,19 +77,32 @@ public class Search extends Controller {
             return ok("fail");
         } else {
             String jsonModel = json.path("json").getTextValue();
+            String tpnModel = json.path("tpn").getTextValue();
             String algorithm = json.path("algorithm").getTextValue();
+            HashMap<String, Object> parameters = jsonParametersToHash(json.path("parameters"));
             Logger.info("search model, algorithm " + algorithm + ", JSON representation: " + jsonModel);
 
-            SearchAlgorithm searchAlgorithm = engine.getAlgorithm(algorithm);
-            ProcessModel processModel = BusinessProcess.fromJsonString(jsonModel);
-            try {
-                NetSystem net = new NetSystem(processModel.toPetriNet());
+            SearchAlgorithm searchAlgorithm = engine.getAlgorithm(algorithm, parameters);
 
+            // Support multiple input formats for process models
+            ProcessModel processModel;
+            NetSystem net;
+            if (jsonModel != null) {
+               processModel = BusinessProcess.fromJsonString(jsonModel);
+               net = new NetSystem(processModel.toPetriNet());
+            } else if (tpnModel != null) {
+                net = BusinessProcess.fromTpn(tpnModel);
+            } else {
+                return ok("fail");
+            }
+
+            try {
                 // Add initial marking to PetriNet
                 for (Place p : net.getSourcePlaces()) {
                     net.getMarking().put(p, 1);
                 }
 
+                long startTime = System.nanoTime();
                 ArrayList<SearchResult> results = searchAlgorithm.search(net);
                 long estimatedTime = System.nanoTime() - startTime;
 
@@ -82,7 +123,41 @@ public class Search extends Controller {
                 Logger.error("Error while searching", e);
             }
 
+            ObjectNode measurements = response.putObject("measurements");
+            HashMap<String, StopWatch> stopWatches = Measurement.getAll();
+            for (Map.Entry<String, StopWatch> s : stopWatches.entrySet()) {
+                ObjectNode measurement = measurements.putObject(s.getKey());
+
+                ArrayNode values = measurement.putArray("values");
+                for (Long value : s.getValue().statistics().toArray(new Long[1])) {
+                    values.add(value);
+                }
+
+                measurement.put("min", s.getValue().statistics().min());
+                measurement.put("max", s.getValue().statistics().max());
+                measurement.put("avg", s.getValue().statistics().avg());
+                measurement.put("median", s.getValue().statistics().median());
+                measurement.put("quartile", s.getValue().statistics().quantile(0.25));
+                measurement.put("quantile-0.9", s.getValue().statistics().quantile(0.9));
+                measurement.put("variance", s.getValue().statistics().variance());
+                measurement.put("stddev", Math.sqrt(s.getValue().statistics().variance()));
+            }
+
+            Measurement.clear();
+
             return ok(response);
         }
+    }
+
+    private static HashMap<String, Object> jsonParametersToHash(JsonNode jsonParameters) {
+        HashMap<String, Object> parameters = new HashMap<>();
+
+        Iterator<Map.Entry<String, JsonNode>> fields = jsonParameters.getFields();
+        while (fields.hasNext()) {
+           Map.Entry field = fields.next();
+           parameters.put(field.getKey().toString(), ((TextNode)field.getValue()).getTextValue());
+        }
+
+        return parameters;
     }
 }

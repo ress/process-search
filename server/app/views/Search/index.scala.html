@@ -11,6 +11,7 @@
     <link href="/assets/stylesheets/style.css" rel="stylesheet" media="screen">
 
     <script src="/assets/javascripts/angular.js"></script>
+    <script src="http://underscorejs.org/underscore.js"></script>
 
     <!-- D3 and dagre -->
     <script type="text/javascript" src="/assets/javascripts/d3.js"></script>
@@ -35,33 +36,28 @@
         <div class="span2 preferences">
             <h5>Search Algorithm</h5>
             <div class="preference-set">
-                <label class="radio" ng-repeat="algorithm in algorithms">
-                    <input ng-model="$parent.algorithm" value="{{algorithm.name}}" name="algorithm" type="radio"> {{algorithm.name}}
+                <label class="radio" ng-repeat="algorithm in data.algorithms">
+                    <input ng-model="$parent.data.algorithm" value="{{algorithm.name}}" name="algorithm" type="radio"> {{algorithm.name}}
                 </label>
             </div>
 
-            <h5>Index</h5>
-            <div class="preference-set">
-                <label class="radio">
-                    <input type="radio" name="index"> M-Tree
-                </label>
-                <label class="radio">
-                    <input type="radio" name="index"> No index
-                </label>
+            <div class="preference-set" ng-repeat="parameter in data.parameters">
+                <h5>{{parameter.name}}</h5>
+                <ng-switch on="parameter.type">
+                    <div ng-switch-when="number">
+                        <input class="input-small" ng-model="parameter.value" value="{{parameter.default}}">
+                    </div>
+                </ng-switch>
             </div>
 
-            <h5>k-value</h5>
-            <div class="preference-set">
-                <input type="text" class="input-small" value="10000">
-            </div>
         </div>
         <div class="span10">
             <h5>Results</h5>
             <div class="results container-fluid">
                 <div class="result-details">
-                    Found {{results.length}} results in {{time / 1000000000}} seconds.
+                    Found {{data.results.length}} results in {{data.time / 1000000000}} seconds.
                 </div>
-                <div ng-repeat="result in results" class="result clearfix">
+                <div ng-repeat="result in data.results" class="result clearfix">
                     <div class="span1" style="text-align: center">
                         <span class="result-index">#{{$index + 1}}</span>
                         <p>{{result.score|number}}</p>

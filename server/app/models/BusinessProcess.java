@@ -2,6 +2,8 @@ package models;
 
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.jbpt.petri.NetSystem;
+import org.jbpt.petri.io.WoflanSerializer;
 import org.jbpt.pm.Activity;
 import org.jbpt.pm.FlowNode;
 import org.jbpt.pm.ProcessModel;
@@ -11,6 +13,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class BusinessProcess {
+    public static NetSystem fromTpn(String tpnModel) {
+        ProcessModel processModel = new ProcessModel();
+
+        return WoflanSerializer.parse(tpnModel);
+    }
+
     public static ProcessModel fromJson(JsonNode bpModel) {
         ProcessModel processModel = new ProcessModel();
         // Holds the objects for every node in the diagram that are found in the first pass

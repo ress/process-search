@@ -12,7 +12,8 @@ object ApplicationBuild extends Build {
       // Add your project dependencies here,
       //"org.jbpt" % "jbpt" % "0.2.348"
       "org.apache.lucene" % "lucene-core" % "3.6.1",
-      "org.apache.lucene" % "lucene-analyzers" % "3.6.1"
+      "org.apache.lucene" % "lucene-analyzers" % "3.6.1",
+      "com.google.guava" % "guava" % "14.0.1"
     )
 
     val main = play.Project(appName, appVersion, appDependencies).settings(
