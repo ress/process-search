@@ -37,17 +37,32 @@ angular.module('searchModule', []);
 function SearchCtrl($scope, $window, $http) {
     $scope.time = 0;
     $scope.results = [];
-    $scope.algorithms = [
-           { name: 'Querying by Example', short: 'qbe' },
-           { name: 'Similarity Search', short: 'simsearch' }
-       ];
-    $scope.algorithm = $scope.algorithms[0].name;
+    $scope.algorithms = [];
+    $scope.algorithm = null;
+
+    $http({ method: 'GET', url: '/search/algorithms'})
+        .success(function(data) {
+            $scope.algorithms = data['algorithms'];
+            $scope.algorithm = $scope.algorithms[0].name;
+        });
+
+    $scope.$watch('algorithm', function(value) {
+        var algorithm = _.find($scope.algorithms, function(algorithm) { return algorithm.name == value; });
+        if (algorithm) {
+            $scope.parameters = algorithm.parameters;
+            _.each($scope.parameters, function(parameter) {
+                parameter['value'] = parameter['default'];
+            });
+
+        }
+    });
 
     $scope.search = function() {
         var model = $window.ORYXEditor.getSerializedJSON();
         var params = {
             algorithm: $scope.algorithm,
-            json: model
+            json: model,
+            parameters: _.object(_.map($scope.parameters, function(parameter) { return [parameter.name, parameter.value]; }))
         };
 
         localStorage.setItem("lastModel", model);

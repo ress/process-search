@@ -12,3 +12,5 @@ GET     /compiled/*file               controllers.ExternalAssets.at(path="../com
 
 # Submitting search query
 POST    /search                     controllers.Search.search()
+
+GET     /search/algorithms          controllers.Search.algorithms()

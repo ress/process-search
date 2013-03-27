@@ -60,6 +60,11 @@ public class GEDSimilaritySearch implements SearchAlgorithm
     }
 
     @Override
+    public ArrayList<Object> getAvailableParameters() {
+        return new ArrayList<>();
+    }
+
+    @Override
     public void initialize() {
         this.metric = this.getMetric();
 

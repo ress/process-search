@@ -2,7 +2,6 @@ package models.algorithms.similarity;
 
 import models.Repository;
 import models.SearchResult;
-import models.algorithms.similarity.GEDSimilaritySearch;
 import models.simsearch.*;
 import models.simsearch.metrics.RSD;
 import org.jbpt.bp.RelSet;
@@ -40,6 +39,20 @@ public class BpSimilaritySearch extends GEDSimilaritySearch {
     @Override
     public String getIdentifier() {
         return "Similarity Search";
+    }
+
+    @Override
+    public ArrayList<Object> getAvailableParameters() {
+        ArrayList<Object> parameters = new ArrayList<>();
+
+        HashMap<String, Object> k_value = new HashMap<>();
+        k_value.put("name", "k-value");
+        k_value.put("type", "number");
+        k_value.put("default", 10000);
+
+        parameters.add(k_value);
+
+        return parameters;
     }
 
     @Override

@@ -11,6 +11,7 @@
     <link href="/assets/stylesheets/style.css" rel="stylesheet" media="screen">
 
     <script src="/assets/javascripts/angular.js"></script>
+    <script src="http://underscorejs.org/underscore.js"></script>
 
     <!-- D3 and dagre -->
     <script type="text/javascript" src="/assets/javascripts/d3.js"></script>
@@ -40,20 +41,15 @@
                 </label>
             </div>
 
-            <h5>Index</h5>
-            <div class="preference-set">
-                <label class="radio">
-                    <input type="radio" name="index"> M-Tree
-                </label>
-                <label class="radio">
-                    <input type="radio" name="index"> No index
-                </label>
+            <div class="preference-set" ng-repeat="parameter in parameters">
+                <h5>{{parameter.name}}</h5>
+                <ng-switch on="parameter.type">
+                    <div ng-switch-when="number">
+                        <input type="number" ng-model="parameter.value" value="{{parameter.default}}">
+                    </div>
+                </ng-switch>
             </div>
 
-            <h5>k-value</h5>
-            <div class="preference-set">
-                <input type="text" class="input-small" value="10000">
-            </div>
         </div>
         <div class="span10">
             <h5>Results</h5>

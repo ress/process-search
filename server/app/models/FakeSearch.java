@@ -3,6 +3,7 @@ package models;
 import org.jbpt.petri.NetSystem;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created with IntelliJ IDEA.
@@ -19,6 +20,11 @@ public class FakeSearch implements SearchAlgorithm {
 
     @Override
     public void initialize() {
+    }
+
+    @Override
+    public ArrayList<Object> getAvailableParameters() {
+        return new ArrayList<>();
     }
 
     @Override

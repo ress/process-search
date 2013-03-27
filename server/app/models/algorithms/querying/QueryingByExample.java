@@ -14,6 +14,7 @@ import play.Logger;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Set;
 
 /**
@@ -27,6 +28,11 @@ public class QueryingByExample implements SearchAlgorithm {
     @Override
     public String getIdentifier() {
         return "Querying by Example";
+    }
+
+    @Override
+    public ArrayList<Object> getAvailableParameters() {
+        return new ArrayList<>();
     }
 
     @Override

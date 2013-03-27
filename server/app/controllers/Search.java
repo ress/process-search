@@ -6,6 +6,7 @@ import models.SearchAlgorithm;
 import models.SearchEngine;
 import models.SearchResult;
 import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.jbpt.petri.NetSystem;
@@ -33,6 +34,24 @@ public class Search extends Controller {
 
         Content html = views.html.Search.index.render(engine.getAlgorithmIdentifiers());
         return ok(html);
+    }
+
+    public static Result algorithms() {
+        if (engine == null) {
+            engine = new SearchEngine();
+        }
+
+        ObjectNode response = Json.newObject();
+        ArrayNode algorithms = response.putArray("algorithms");
+        ObjectMapper om = new ObjectMapper();
+
+        for (String identifier : engine.getAlgorithmIdentifiers()) {
+            ObjectNode algorithm = algorithms.addObject();
+            algorithm.put("name", identifier);
+            algorithm.put("parameters", om.valueToTree(engine.getAlgorithm(identifier).getAvailableParameters()));
+        }
+
+        return ok(response);
     }
 
     @BodyParser.Of(BodyParser.Json.class)
