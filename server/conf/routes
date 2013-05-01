@@ -16,3 +16,5 @@ POST    /search                     controllers.Search.search()
 GET     /search/algorithms          controllers.Search.algorithms()
 POST    /measurements/clear         controllers.Search.clearMeasurements()
 POST    /measurements/persist         controllers.Search.persistMeasurements()
+
+GET /models/list controllers.Model.list()
