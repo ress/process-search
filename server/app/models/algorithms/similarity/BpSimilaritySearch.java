@@ -105,6 +105,7 @@ public class BpSimilaritySearch extends GEDSimilaritySearch {
                 double sphereDist1 = queryPoint.sphereDistance((Sphere)((Tree.Query.Candidate)candidate1).descriptor());
                 double sphereDist2 = queryPoint.sphereDistance((Sphere)((Tree.Query.Candidate)candidate2).descriptor());
                 Measurement.stop("BPSimilaritySearch.distanceComparator");
+                Measurement.step("BPSimilaritySearch.comparisons");
                 return sphereDist1 < sphereDist2 ? -1 : sphereDist1 == sphereDist2 ? 0 : 1;
             }
         };

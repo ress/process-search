@@ -74,10 +74,12 @@ public class Measurement {
 
     public static void clear() {
         Measurement.getInstance().clearStopWatches(false);
+        Measurement.getInstance().clearSteppers();
     }
 
     public static void clearPersistent() {
         Measurement.getInstance().clearStopWatches(true);
+        Measurement.getInstance().clearSteppers();
     }
 
     public static HashMap<String, StopWatch> getAllStopWatches() {
@@ -118,6 +120,10 @@ public class Measurement {
                 return this.stopWatches.get(name);
             }
         }
+    }
+
+    protected void clearSteppers() {
+        this.steppers.clear();
     }
 
     protected void clearStopWatches(boolean persistent) {
