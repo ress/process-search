@@ -55,7 +55,7 @@ public class QueryingByExample implements SearchAlgorithm {
             }
             Logger.info("Starting to load process models");
             for (String filename : dir.list()) {
-                if (filename.matches(".*tpn")) {
+                if (filename.matches(".*tpn") && Repository.shouldLoad(filename)) {
                     MinimalKSuccessorRelation<NetSystem, Node> minK = null;
 
                     // If possible, load MinKSuccessorRelation from disk, otherwise
@@ -63,7 +63,7 @@ public class QueryingByExample implements SearchAlgorithm {
                     if (repository.contains(filename)) {
                         minK = repository.get(filename);
                     } else {
-                        NetSystem model = this.loadModel(filename);
+                        NetSystem model = Repository.loadModel(filename + "");
                         if (model != null) {
                              minK = new MinimalKSuccessorRelation<NetSystem, Node>(model);
                             repository.put(filename, minK);
@@ -108,23 +108,5 @@ public class QueryingByExample implements SearchAlgorithm {
         } catch (IOException e) {
             return new ArrayList<>();
         }
-    }
-
-    private NetSystem loadModel(String name) {
-        // remove possibly trailing / (\)
-        File file = new File(MODEL_PATH + File.separator + name);
-
-        if (!file.exists()) {
-            return null;
-        }
-
-        Measurement.start("QueryingByExample.parseTpn", true);
-        NetSystem net = WoflanSerializer.parse(file);
-        Measurement.stop("QueryingByExample.parseTpn", true);
-        net.setName(name);
-        net.setId(name);
-        //Logger.info("Petri-net visualization: https://chart.googleapis.com/chart?cht=gv&chl=" + java.net.URLEncoder.encode(net.toDOT()));
-
-        return net;
     }
 }

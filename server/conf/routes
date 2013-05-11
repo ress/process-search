@@ -18,3 +18,10 @@ POST    /measurements/clear         controllers.Search.clearMeasurements()
 POST    /measurements/persist         controllers.Search.persistMeasurements()
 
 GET /models/list controllers.Model.list()
+OPTIONS /models/list controllers.Model.checkPreFlight()
+
+POST /models/load controllers.Model.load()
+OPTIONS /models/load controllers.Model.checkPreFlight()
+
+GET /models/selected controllers.Model.selected()
+OPTIONS /models/selected controllers.Model.checkPreFlight()

@@ -13,6 +13,7 @@ import org.jbpt.petri.NetSystem;
 import org.jbpt.petri.Place;
 import org.jbpt.pm.ProcessModel;
 import play.Logger;
+import play.Play;
 import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Content;
@@ -28,7 +29,7 @@ public class Search extends Controller {
 
     public static Result index() {
         if (engine == null) {
-            engine = new SearchEngine();
+            engine = SearchEngine.getInstance();
         }
 
         Content html = views.html.Search.index.render(engine.getAlgorithmIdentifiers());
@@ -47,18 +48,14 @@ public class Search extends Controller {
     }
 
     public static Result algorithms() {
-        if (engine == null) {
-            engine = new SearchEngine();
-        }
-
         ObjectNode response = Json.newObject();
         ArrayNode algorithms = response.putArray("algorithms");
         ObjectMapper om = new ObjectMapper();
 
-        for (String identifier : engine.getAlgorithmIdentifiers()) {
+        for (String identifier : SearchEngine.getInstance().getAlgorithmIdentifiers()) {
             ObjectNode algorithm = algorithms.addObject();
             algorithm.put("name", identifier);
-            algorithm.put("parameters", om.valueToTree(engine.getAlgorithm(identifier).getAvailableParameters()));
+            algorithm.put("parameters", om.valueToTree(SearchEngine.getInstance().getAlgorithm(identifier).getAvailableParameters()));
         }
 
         return ok(response);
@@ -69,7 +66,7 @@ public class Search extends Controller {
         ObjectNode response = Json.newObject();
         RequestBody body = request().body();
         if (engine == null) {
-            engine = new SearchEngine();
+            engine = SearchEngine.getInstance();
         }
 
         JsonNode json = body.asJson();

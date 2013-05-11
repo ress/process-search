@@ -3,10 +3,14 @@ package models;
 import org.jbpt.bp.MinimalKSuccessorRelation;
 import org.jbpt.petri.NetSystem;
 import org.jbpt.petri.Node;
+import org.jbpt.petri.io.WoflanSerializer;
 import play.Logger;
+import play.Play;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -18,6 +22,10 @@ import java.util.HashMap;
 public class Repository<M> {
     protected String path;
     protected HashMap<String, M> models;
+
+    // can be set through the Model controller to define a list of models that should be loaded
+    // by the search implementation
+    public static List<String> selectedModels = new ArrayList<String>();
 
     public Repository(String path) {
         this.path = path;
@@ -63,5 +71,26 @@ public class Repository<M> {
 
             return false;
         }
+    }
+
+    public static boolean shouldLoad(String filename) {
+        return Repository.selectedModels.size() == 0 || Repository.selectedModels.contains(filename);
+    }
+
+    public static NetSystem loadModel(String filename) {
+        String modelPath = Play.application().configuration().getString("search.modelpath");
+        File file = new File(modelPath + File.separator + filename);
+
+        if (!file.exists()) {
+            return null;
+        }
+
+        Measurement.start("Repository.parseTpn", true);
+        NetSystem net = WoflanSerializer.parse(file);
+        Measurement.stop("Repository.parseTpn", true);
+        net.setName(filename);
+        net.setId(filename);
+
+        return net;
     }
 }

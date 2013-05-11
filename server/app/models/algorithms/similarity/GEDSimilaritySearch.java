@@ -1,6 +1,7 @@
 package models.algorithms.similarity;
 
 import de.uni_potsdam.hpi.bpt.qbe.index.RelationInvertedIndex;
+import models.Repository;
 import models.SearchAlgorithm;
 import models.SearchResult;
 import models.simsearch.ExperimentMetric;
@@ -89,7 +90,7 @@ public class GEDSimilaritySearch implements SearchAlgorithm
             }
             Logger.info("Starting to load process models");
             for (String filename : dir.list()) {
-                if (filename.matches(".*tpn")) {
+                if (filename.matches(".*tpn") && Repository.shouldLoad(filename)) {
                     IDatapoint datapoint = this.getDataPoint(filename);
 
                     if (datapoint != null) {
@@ -160,7 +161,7 @@ public class GEDSimilaritySearch implements SearchAlgorithm
         SimpleGraphDatapoint sg = null;
 
         try {
-            NetSystem net = WoflanSerializer.parse(new File(MODEL_PATH + "/" + modelFileName));
+            NetSystem net = Repository.loadModel(modelFileName);
             if (net == null) {
                 throw new RuntimeException("Unable to load model: " + modelFileName);
             }

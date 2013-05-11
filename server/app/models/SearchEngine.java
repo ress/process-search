@@ -19,8 +19,17 @@ import java.util.Set;
  */
 public class SearchEngine {
     public ArrayListMultimap<String, SearchAlgorithm> algorithms;
+    protected static SearchEngine instance;
 
-    public SearchEngine() {
+    public static SearchEngine getInstance() {
+        if (instance == null) {
+            instance = new SearchEngine();
+        }
+
+        return instance;
+    }
+
+    protected SearchEngine() {
         this.algorithms = ArrayListMultimap.create();
 
         // Querying by Example
@@ -89,5 +98,9 @@ public class SearchEngine {
 
         // Didn't find one, so create a new one
         return buildSearchAlgorithm(algorithm, parameters);
+    }
+
+    public void resetAlgorithms() {
+        this.algorithms.clear();
     }
 }

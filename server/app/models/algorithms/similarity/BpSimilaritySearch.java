@@ -27,7 +27,6 @@ import java.util.*;
  * To change this template use File | Settings | File Templates.
  */
 public class BpSimilaritySearch extends GEDSimilaritySearch {
-    protected final String MODEL_PATH = "/Users/bart/Projekte/MA/EfficientSimilaritySearch/comin2011/tpn";
     protected Repository<RelSet<NetSystem, Node>> repository;
     protected HashMap<String, Object> parameters;
 
@@ -140,11 +139,8 @@ public class BpSimilaritySearch extends GEDSimilaritySearch {
             if (repository.contains(modelFileName)) {
                 relset = repository.get(modelFileName);
             } else {
-                Measurement.start("BPSimilaritySearch.parseTPN");
-                NetSystem net = WoflanSerializer.parse(new File(this.MODEL_PATH + "/" + modelFileName));
-                Measurement.stop("BPSimilaritySearch.parseTPN");
+                NetSystem net = Repository.loadModel(modelFileName);
 
-                Logger.info("Petri-net visualization: https://chart.googleapis.com/chart?cht=gv&chl=" + java.net.URLEncoder.encode(net.toDOT()));
                 if (net == null) {
                     throw new RuntimeException("Unable to load model: " + modelFileName);
                 }
