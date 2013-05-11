@@ -121,7 +121,7 @@ public class Search extends Controller {
             }
 
             ObjectNode measurements = response.putObject("measurements");
-            HashMap<String, StopWatch> stopWatches = Measurement.getAll();
+            HashMap<String, StopWatch> stopWatches = Measurement.getAllStopWatches();
             for (Map.Entry<String, StopWatch> s : stopWatches.entrySet()) {
                 ObjectNode measurement = measurements.putObject(s.getKey());
 
@@ -138,6 +138,13 @@ public class Search extends Controller {
                 measurement.put("quantile-0.9", s.getValue().statistics().quantile(0.9));
                 measurement.put("variance", s.getValue().statistics().variance());
                 measurement.put("stddev", Math.sqrt(s.getValue().statistics().variance()));
+            }
+
+            Measurement.step("basicStepper");
+            Measurement.step("basicStepper", 2);
+            ObjectNode steppers = response.putObject("steppers");
+            for (Map.Entry<String, Integer> s : Measurement.getAllSteppers().entrySet()) {
+                steppers.put(s.getKey(), s.getValue());
             }
 
             Measurement.clear();

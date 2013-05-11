@@ -18,12 +18,14 @@ public class Measurement {
     private static Measurement instance = null;
     protected HashMap<String, StopWatch> stopWatches = null;
     protected HashMap<String, StopWatch> persistentStopWatches = null;
+    protected HashMap<String, Integer> steppers = null;
     protected boolean persist = false;
 
     /* Measurement is a singleton */
     protected Measurement() {
         this.stopWatches = new HashMap<>();
         this.persistentStopWatches = new HashMap<>();
+        this.steppers = new HashMap<>();
     }
 
     public static Measurement getInstance() {
@@ -57,6 +59,15 @@ public class Measurement {
         Measurement.getInstance().getStopWatch(name, persistent).stop();
     }
 
+    public static void step(String name) {
+        step(name, 1);
+    }
+
+    public static void step(String name, Integer amount) {
+        Logger.info("Stepper" + name + ": step by " + amount.toString());
+        Measurement.getInstance().addStep(name, amount);
+    }
+
     public static void statistics() {
         Measurement.getInstance().printAllStatistics();
     }
@@ -69,8 +80,12 @@ public class Measurement {
         Measurement.getInstance().clearStopWatches(true);
     }
 
-    public static HashMap<String, StopWatch> getAll() {
-        return Measurement.getInstance().getAllStopWatches();
+    public static HashMap<String, StopWatch> getAllStopWatches() {
+        return Measurement.getInstance()._getAllStopWatches();
+    }
+
+    public static HashMap<String, Integer> getAllSteppers() {
+        return Measurement.getInstance()._getAllSteppers();
     }
 
     public static void setPersist(boolean persist) {
@@ -78,6 +93,14 @@ public class Measurement {
     }
 
     /* Actual implementations of stopwatch management */
+
+    protected void addStep(String name, Integer amount) {
+        if (this.steppers.containsKey(name)) {
+            this.steppers.put(name, this.steppers.get(name) + amount);
+        } else {
+            this.steppers.put(name, amount);
+        }
+    }
 
     protected StopWatch getStopWatch(String name, boolean persistent) {
         if (persistent) {
@@ -113,7 +136,7 @@ public class Measurement {
         }
     }
 
-    protected HashMap<String, StopWatch> getAllStopWatches() {
+    protected HashMap<String, StopWatch> _getAllStopWatches() {
         HashMap<String, StopWatch> stopWatches = new HashMap<>();
 
         if (this.stopWatches.size() > 0)
@@ -123,6 +146,10 @@ public class Measurement {
             stopWatches.putAll(this.persistentStopWatches);
 
         return stopWatches;
+    }
+
+    protected HashMap<String, Integer> _getAllSteppers() {
+        return (HashMap<String, Integer>) this.steppers.clone();
     }
 
     protected void printAllStatistics() {
