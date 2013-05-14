@@ -1,0 +1,47 @@
+<!doctype html>
+<html ng-app="measurements">
+<head>
+  <link rel="stylesheet" href="components/bootstrap/css/bootstrap.min.css">
+  <script src="components/angular/angular.js"></script>
+  <script src="components/jquery/jquery.js"></script>
+  <script src="components/jquery/jquery-migrate.js"></script>
+  <script src="components/bootstrap/js/bootstrap.js"></script>
+  <script type="text/javascript">
+    angular.module('measurements', []);
+
+    function MainCtrl($scope, $window, $http) {
+      var baseURI = "http://localhost:9000";
+      $scope.data = {
+        'availableModels': [],
+        'selectedModels': [],
+      };
+
+      $scope.loadAvailableModels = function() {
+        console.log("fo");
+        $http({ method: 'GET', url: baseURI + "/models/list"})
+          .success(function(data) {
+            $scope.data.availableModels = data.models;
+          });
+
+        $http({ method: 'GET', url: baseURI + "/models/selected"})
+          .success(function(data) {
+            $scope.data.selectedModels = data.models;
+          });
+      };
+
+      $scope.loadModels = function() {
+        alert($scope.data.selectedModels);
+        $http({ method: 'POST', url: baseURI + "/models/load", data: {"models" : $scope.data.selectedModels }})
+      };
+    }
+    MainCtrl.$inject = ['$scope', '$window', '$http'];
+  </script>
+</head>
+<body ng-controller="MainCtrl" ng-init="loadAvailableModels()">
+  <select ng-model="data.selectedModels" multiple ng-options="model for model in data.availableModels">
+  </select>
+  {{ data.selectedModels.length }} / {{ data.availableModels.length }} models selected
+
+  <button class="btn" ng-click="loadModels()">Load Models</button>
+</body>
+</html>

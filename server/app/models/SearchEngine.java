@@ -31,7 +31,12 @@ public class SearchEngine {
 
     protected SearchEngine() {
         this.algorithms = ArrayListMultimap.create();
+        init();
 
+
+    }
+
+    private void init() {
         // Querying by Example
         SearchAlgorithm querying = new QueryingByExample();
         this.algorithms.put(querying.getIdentifier(), querying);
@@ -49,7 +54,7 @@ public class SearchEngine {
 //        this.algorithms.put(seqSimilaritySearch.getIdentifier(), seqSimilaritySearch);
 
         // Similarity Search (Behavior Profile based, sequential search)
-        //this.addSearchAlgorithm(new SeqBpSimilaritySearch());
+        this.addSearchAlgorithm(new SeqBpSimilaritySearch());
 
         // Similarity Search (Behavior Profile based, indexed)
         this.addSearchAlgorithm(new BpSimilaritySearch());
@@ -74,6 +79,8 @@ public class SearchEngine {
             searchAlgorithm = new QueryingByExample();
         } else if (algorithm.equals("Similarity Search")) {
             searchAlgorithm = new BpSimilaritySearch();
+        } else if (algorithm.equals("Similarity Search (sequential)")) {
+            searchAlgorithm = new SeqBpSimilaritySearch();
         } else {
             return null;
         }
@@ -102,5 +109,6 @@ public class SearchEngine {
 
     public void resetAlgorithms() {
         this.algorithms.clear();
+        init();
     }
 }

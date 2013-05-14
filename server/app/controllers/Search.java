@@ -48,6 +48,7 @@ public class Search extends Controller {
     }
 
     public static Result algorithms() {
+        response().setHeader("Access-Control-Allow-Origin", "*");
         ObjectNode response = Json.newObject();
         ArrayNode algorithms = response.putArray("algorithms");
         ObjectMapper om = new ObjectMapper();
@@ -63,6 +64,8 @@ public class Search extends Controller {
 
     @BodyParser.Of(BodyParser.Json.class)
     public static Result search() {
+        response().setHeader("Access-Control-Allow-Origin", "*");
+
         ObjectNode response = Json.newObject();
         RequestBody body = request().body();
         if (engine == null) {
@@ -123,6 +126,10 @@ public class Search extends Controller {
             ObjectNode measurements = response.putObject("measurements");
             HashMap<String, StopWatch> stopWatches = Measurement.getAllStopWatches();
             for (Map.Entry<String, StopWatch> s : stopWatches.entrySet()) {
+                if (s.getValue().numLaps() == 0) {
+                    continue;
+                }
+
                 ObjectNode measurement = measurements.putObject(s.getKey());
 
                 ArrayNode values = measurement.putArray("values");

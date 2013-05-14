@@ -1,5 +1,6 @@
 package models.algorithms.similarity;
 
+import models.Measurement;
 import models.SearchResult;
 import models.simsearch.IDatapoint;
 import models.simsearch.RelSetDatapoint;
@@ -12,7 +13,7 @@ import java.util.*;
 public class SeqBpSimilaritySearch extends BpSimilaritySearch {
     @Override
     public String getIdentifier() {
-        return "BP Similarity Search (sequential)";
+        return "Similarity Search (sequential)";
     }
 
     @Override
@@ -24,6 +25,7 @@ public class SeqBpSimilaritySearch extends BpSimilaritySearch {
 
         SortedSet<ResultData> intermediateResults = new TreeSet<>();
 
+        this.metric.resetCounter();
         for (IDatapoint dp : this.loadedModels) {
             intermediateResults.add(new ResultData(this.metric.distance(query, dp), dp));
             System.out.println("distance(query, " + dp.getId() + ") = " + this.metric.distance(query, dp));
@@ -37,6 +39,9 @@ public class SeqBpSimilaritySearch extends BpSimilaritySearch {
             ResultData d = res.next();
             System.out.println("distance(query, " + d.p.getId() + ") = " + d.distance);
         }
+
+        Measurement.step("SeqBPSimilaritySearch.MetricComparisons", this.metric.getNumberOfComparisons());
+        this.metric.resetCounter();
 
 
         return results;

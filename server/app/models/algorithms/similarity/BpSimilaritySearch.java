@@ -97,7 +97,7 @@ public class BpSimilaritySearch extends GEDSimilaritySearch {
         query.setId("Query-" + UUID.randomUUID().toString());
 
         // knn query ---------------------------------------------------------------------------
-        final Sphere queryPoint = new Sphere(query, 0.5, null, -1, this.metric);
+        final Sphere queryPoint = new Sphere(query, 1f, null, -1, this.metric);
         // internal NN Query Cursor deals with a candidate objects
         Comparator distanceComparator = new Comparator () {
             public int compare (Object candidate1, Object candidate2) {
@@ -110,14 +110,19 @@ public class BpSimilaritySearch extends GEDSimilaritySearch {
             }
         };
 
+        //this.metric.resetCounter();
 
         // run k-NN use taker get 5-NN points
         // Note: mtree.query(queue) method deals with object of Type candidate
         // to extract actual data we should call candidate.descriptor() or entry() method
         Measurement.start("BPSimilaritySearch.knnSearch");
+        //Iterator kNNresult = this.tree.query(queryPoint);
         Iterator kNNresult = new Taker(this.tree.query(new DynamicHeap(distanceComparator)), QUERY_K);
         Measurement.stop("BPSimilaritySearch.knnSearch");
 
+        //Measurement.step("BPSimilaritySearch.MetricComparisons", this.metric.getNumberOfComparisons());
+        this.metric.resetCounter();
+        int number = 0;
         while(kNNresult.hasNext()){
             Sphere obj = (Sphere)((Tree.Query.Candidate)kNNresult.next()).descriptor();
             IDatapoint current = (IDatapoint) obj.center();
@@ -126,7 +131,13 @@ public class BpSimilaritySearch extends GEDSimilaritySearch {
             if (queryPoint.centerDistance(obj) < 1) {
                 results.add(new SearchResult(((RelSetDatapoint)obj.center()).getId(), current.getModel(), queryPoint.centerDistance(obj)));
             }
+            //RelSetDatapoint p = (RelSetDatapoint)kNNresult.next();
+            //results.add(new SearchResult(p.getId(), p.getModel()));
+            number++;
         }
+        Measurement.step("BPSimilaritySearch.MetricComparisons", this.metric.getNumberOfComparisons());
+
+        this.metric.resetCounter();
 
         return results;
     }

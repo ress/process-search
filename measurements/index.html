@@ -6,18 +6,31 @@
   <script src="components/jquery/jquery.js"></script>
   <script src="components/jquery/jquery-migrate.js"></script>
   <script src="components/bootstrap/js/bootstrap.js"></script>
+  <script src="components/underscore/underscore.js"></script>
+  <script src="components/Flot/jquery.flot.js"></script>
+  <style type="text/css">
+    chart {
+      display:block;
+      width:400px;
+      height:400px;
+    }
+  </style>
   <script type="text/javascript">
-    angular.module('measurements', []);
+    var App = angular.module('measurements', []);
 
-    function MainCtrl($scope, $window, $http) {
+    function MainCtrl($scope, $window, $http, $q) {
       var baseURI = "http://localhost:9000";
       $scope.data = {
         'availableModels': [],
         'selectedModels': [],
+
+        'availableAlgorithms': [],
+        'selectedAlgorithm': null,
+
+        'searchModel': ''
       };
 
-      $scope.loadAvailableModels = function() {
-        console.log("fo");
+      $scope.init = function() {
         $http({ method: 'GET', url: baseURI + "/models/list"})
           .success(function(data) {
             $scope.data.availableModels = data.models;
@@ -27,21 +40,179 @@
           .success(function(data) {
             $scope.data.selectedModels = data.models;
           });
+
+        $http({ method: 'GET', url: baseURI + "/search/algorithms"})
+          .success(function(data) {
+            $scope.data.availableAlgorithms = data.algorithms;
+            $scope.data.selectedAlgorithm = $scope.data.availableAlgorithms[0];
+          })
       };
 
-      $scope.loadModels = function() {
-        alert($scope.data.selectedModels);
-        $http({ method: 'POST', url: baseURI + "/models/load", data: {"models" : $scope.data.selectedModels }})
+      $scope.loadModels = function(callback) {
+        return $http({ method: 'POST', url: baseURI + "/models/load", data: {"models" : $scope.data.selectedModels }})
+          .success(function(data) {
+            if (typeof callback == "function") {
+              callback(data);
+            }
+          });
       };
+
+      $scope.automaticallySelectModels = function() {
+        $scope.data.selectedModels = $scope.data.availableModels.slice(0, parseInt($scope.data.numAutomaticModels, 10));
+      }
+
+      $scope.$watch('data.selectedModels', function(v) {
+        $scope.data.numAutomaticModels = v.length;
+      });
+
+      $scope.search = function(callback) {
+        var data = {
+          'tpn': $scope.data.searchModel,
+          'algorithm': $scope.data.selectedAlgorithm.name,
+          'parameters': {'k-value':"10000"}
+        };
+
+        return $http({ method: 'POST', url: baseURI + "/search", data: data })
+          .success(function(data) {
+            console.log("Search results:", data);
+
+            if (typeof callback == "function") {
+              callback(data);
+            }
+          });
+      }
+
+
+      // Actual experiment code following
+
+      $scope.data.comparisonExperiment = {
+        stepSize: 5,
+        plot: [[[0, 1], [1, 5], [2, 2]]]
+      };
+
+      $scope.comparisonExperiment = function() {
+        var plots = {};
+        var stepSize = $scope.data.comparisonExperiment.stepSize;
+
+        // Calculating the steps in which models are loaded
+        var steps = [];
+        for (var i = 0; i <= Math.ceil($scope.data.availableModels.length / stepSize) * stepSize; i += stepSize) {
+          if (i == 0) { steps.push(1); }
+          else { steps.push(i); }
+        }
+
+        //
+        // Steps of the experiment following
+        //
+
+        var Step1_loadModels = function(steps) {
+          // Load the number of models for this iteration
+          $scope.data.numAutomaticModels = steps.shift();
+          $scope.automaticallySelectModels();
+          return $scope.loadModels();
+        };
+
+        var Step2_performSearch = function() {
+          return $scope.search();
+        };
+
+        var Step3_evaluateResults = function(results) {
+          _.each(["BPSimilaritySearch.MetricComparisons", "SeqBPSimilaritySearch.MetricComparisons"], function(metric) {
+            if (!_.has(results.data.steppers, metric))
+              return;
+            if (!_.has(plots, metric))
+              plots[metric] = [];
+
+            plots[metric].push([$scope.data.numAutomaticModels, parseInt(results.data.steppers[metric])]);
+          });
+
+          $scope.data.comparisonExperiment.plot = _.map(plots, function(data, key) { return { 'label': key, data: data }; });
+        };
+
+        var run = function(steps, algorithm) {
+          var deferred = $q.defer();
+
+          $scope.data.selectedAlgorithm = algorithm;
+
+          var _recursive_run = function(steps_left) {
+            if (steps_left.length == 0) {
+              deferred.resolve(true);
+              return;
+            }
+
+            Step1_loadModels(steps_left)
+              .then(Step2_performSearch)
+              .then(Step3_evaluateResults)
+              .then(function() { _recursive_run(steps_left); });
+          };
+
+          _.defer(_recursive_run, steps);
+
+          return deferred.promise;
+        }
+
+        var steps2 = steps.slice(0);
+
+        run(steps, $scope.data.availableAlgorithms[1]).then(function() {
+          run(steps2, $scope.data.availableAlgorithms[2]).then(function() {
+            console.log("Deferred done");
+          });
+        });
+      };
+
     }
-    MainCtrl.$inject = ['$scope', '$window', '$http'];
+    MainCtrl.$inject = ['$scope', '$window', '$http', '$q'];
+
+    App.directive('chart', function() {
+    return {
+        restrict: 'E',
+        link: function(scope, elem, attrs) {
+            var chart = null;
+
+            scope.$watch(attrs.ngModel, function(v) {
+              if (!chart) {
+                chart = $.plot(elem, v, {});
+                jQuery(elem).show();
+              } else {
+                chart.setData(v);
+                chart.setupGrid();
+                chart.draw();
+              }
+            });
+        }
+    };
+});
   </script>
 </head>
-<body ng-controller="MainCtrl" ng-init="loadAvailableModels()">
-  <select ng-model="data.selectedModels" multiple ng-options="model for model in data.availableModels">
-  </select>
-  {{ data.selectedModels.length }} / {{ data.availableModels.length }} models selected
+<body ng-controller="MainCtrl" ng-init="init()">
+  <div class="container" style="margin: 50px">
+    <div class="row">
+      <h4>Manual Settings</h4>
+      <div class="span4">
+        <select style="width: 100%" ng-model="data.selectedModels" multiple ng-options="model for model in data.availableModels"></select>
+        <div>{{ data.selectedModels.length }} / {{ data.availableModels.length }} models selected</div>
+        <input type="number" ng-model="data.numAutomaticModels" min="0" max="{{ data.availableModels.length }}" ng-change="automaticallySelectModels()">
+        <button class="btn" ng-click="loadModels()">Load Models</button>
+      </div>
+      <div class="span4">
+        <select style="width: 100%" ng-model="data.selectedAlgorithm" ng-options="algorithm.name for algorithm in data.availableAlgorithms"></select>
+      </div>
+    </div>
 
-  <button class="btn" ng-click="loadModels()">Load Models</button>
+    <div class="row">
+      <div class="span6">
+        <label class="label" for="searchModel">Query model</label>
+        <textarea name="searchModel" ng-model="data.searchModel" class="span6" style="height: 200px">
+        </textarea>
+        <button class="btn" ng-click="search()">Search</button>
+      </div>
+    </div>
+    <div class="row">
+      <h4>Number of Comparisons / Number of models in repository</h4>
+      <input type="number" ng-model="data.comparisonExperiment.stepSize" placeholder="Number of models to add per step">
+      <button class="btn" ng-click="comparisonExperiment()">Run Experiment</button>
+      <chart style="margin-bottom: 100px" class="clearfix" ng-model='data.comparisonExperiment.plot'></chart>
+    </div>
+  </div>
 </body>
 </html>

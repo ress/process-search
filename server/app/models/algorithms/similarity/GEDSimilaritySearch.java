@@ -49,7 +49,7 @@ public class GEDSimilaritySearch implements SearchAlgorithm
     public Set<IDatapoint> loadedModels = new HashSet<>();
 
     // Hardcoded to 50 in Matthias' code too
-    public int nodesize = 50;
+    public int nodesize = 10;
 
     @Override
     public String getIdentifier() {

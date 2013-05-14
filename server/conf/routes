@@ -12,8 +12,10 @@ GET     /compiled/*file               controllers.ExternalAssets.at(path="../com
 
 # Submitting search query
 POST    /search                     controllers.Search.search()
+OPTIONS /search                     controllers.Model.checkPreFlight()
 
 GET     /search/algorithms          controllers.Search.algorithms()
+OPTIONS /search/algorithms          controllers.Model.checkPreFlight()
 POST    /measurements/clear         controllers.Search.clearMeasurements()
 POST    /measurements/persist         controllers.Search.persistMeasurements()
 
