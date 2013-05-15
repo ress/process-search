@@ -2,12 +2,15 @@
 <html ng-app="measurements">
 <head>
   <link rel="stylesheet" href="components/bootstrap/css/bootstrap.min.css">
-  <script src="components/angular/angular.js"></script>
+  <link rel="stylesheet" href="components/ng-grid/ng-grid.css">
   <script src="components/jquery/jquery.js"></script>
   <script src="components/jquery/jquery-migrate.js"></script>
+  <script src="components/angular/angular.js"></script>
+  <script src="components/ng-grid/ng-grid-2.0.5.min.js"></script>
   <script src="components/bootstrap/js/bootstrap.js"></script>
   <script src="components/underscore/underscore.js"></script>
   <script src="components/Flot/jquery.flot.js"></script>
+  <script src="human-eval.js"></script>
   <style type="text/css">
     chart {
       display:block;
@@ -16,7 +19,7 @@
     }
   </style>
   <script type="text/javascript">
-    var App = angular.module('measurements', []);
+    var App = angular.module('measurements', ['ngGrid']);
 
     function MainCtrl($scope, $window, $http, $q) {
       var baseURI = "http://localhost:9000";
@@ -69,7 +72,7 @@
         var data = {
           'tpn': $scope.data.searchModel,
           'algorithm': $scope.data.selectedAlgorithm.name,
-          'parameters': {'k-value':"10000"}
+          'parameters': {'k-value':"10"}
         };
 
         return $http({ method: 'POST', url: baseURI + "/search", data: data })
@@ -160,6 +163,92 @@
         });
       };
 
+
+      //
+      // Human Assessment Code
+      //
+      $scope.data.qualityExperiment = {
+        currentStage: "",
+        queries: [
+          { name: "search1", model: "place \"start_1\" init 1;\nplace \"4\";\nplace \"3\";\nplace \"2\";\nplace \"helper_place_0\";\nplace \"helper_place_1\";\n\ntrans \"START FUNCTION\"\nin \"start_1\"\nout \"helper_place_0\"\n;\ntrans \"5_transition\"\nin \"2\" \"4\"\nout \"helper_place_1\"\n;\ntrans \"start_0_transition\"\nin \"helper_place_0\"\nout \"2\" \"4\"\n;\ntrans \"transportation planning and processing\"\nin \"helper_place_1\"\nout \"3\"\n;" },
+          { name: "search2", model: "\nplace \"9_place\";\nplace \"8\";\nplace \"7\";\nplace \"6\";\nplace \"5\";\nplace \"4\" init 1;\nplace \"10_place\";\n\ntrans \"packing processing\"\nin \"5\" \nout \"8\" \n;\ntrans \"picking\"\nin \"4\" \nout \"9_place\" \n;\ntrans \"goods issue processing\"\nin \"10_place\" \nout \"6\" \n;\ntrans \"helper_transition_0[{XOR}->{material_has_been_picked}]\"\nin \"9_place\" \nout \"7\" \n;\ntrans \"helper_transition_1[{material_has_been_picked}->{XOR}]\"\nin \"7\" \nout \"10_place\" \n;\ntrans \"helper_transition_2[{shipping_unit_is_created}->{XOR}]\"\nin \"8\" \nout \"10_place\" \n;\ntrans \"helper_transition_3[{XOR}->{shipping_unit_is_to_be_created}]\"\nin \"9_place\" \nout \"5\" \n;\n"},
+          { name: "search3", model: "\nplace \"9_place\";\nplace \"8\";\nplace \"7\";\nplace \"6\";\nplace \"5\";\nplace \"4\" init 1;\nplace \"10_place\";\n\ntrans \"packing\"\nin \"5\" \nout \"8\" \n;\ntrans \"selection\"\nin \"4\" \nout \"9_place\" \n;\ntrans \"goods release\"\nin \"10_place\" \nout \"6\" \n;\ntrans \"helper_transition_0[{XOR}->{material_selected}]\"\nin \"9_place\" \nout \"7\" \n;\ntrans \"helper_transition_1[{XOR}->{transportation_unit_to_be_produced}]\"\nin \"9_place\" \nout \"5\" \n;\ntrans \"helper_transition_2[{material_selected}->{XOR}]\"\nin \"7\" \nout \"10_place\" \n;\ntrans \"helper_transition_3[{transportation_unit_produced}->{XOR}]\"\nin \"8\" \nout \"10_place\" \n;\n"},
+          { name: "search4", model: "\nplace \"16\";\nplace \"15\";\nplace \"13\";\nplace \"6\";\nplace \"21_place\";\nplace \"20_place\";\nplace \"helper_place_2\";\nplace \"helper_place_5\";\nplace \"helper_place_10\";\nplace \"99\" init 1;\n\n\ntrans \"19_transition\"\nin \"6\"\nout \"helper_place_5\" \n;\ntrans \"17_transition\"\nin \"helper_place_10\" \nout \"13\" \"20_place\" \n;\ntrans \"verify invoice\"\nin \"helper_place_2\" \nout \"21_place\" \n;\ntrans \"effectuate payment agreement\"\nin \"99\" \nout \"20_place\" \n;\ntrans \"release invoice\"\nin \"helper_place_5\" \nout \"15\" \n;\ntrans \"retrieve invoices\"\nin \"16\" \nout \"20_place\" \n;\ntrans \"22_transition\"\nin \"99\"\nout \"helper_place_2\" \n;\ntrans \"carry out invoicing arrangement\"\nin \"99\" \nout \"helper_place_10\" \n;\ntrans \"helper_transition_3[{XOR}->{invoice_verified}]\"\nin \"20_place\" \nout \"6\" \n;\ntrans \"helper_transition_4[{XOR}->{XOR}]\"\nin \"21_place\" \nout \"20_place\" \n;\ntrans \"helper_transition_6[{XOR}->{invoice_put_on_hold}]\"\nin \"21_place\" \nout \"16\" \n;\n"},
+          { name: "search5", model: "\nplace \"23\";\nplace \"47\" init 1;\nplace \"11\";\nplace \"40\";\nplace \"35\";\nplace \"helper_place_0\";\n\ntrans \"53_transition\"\nin \"helper_place_0\" \nout \"35\" \"23\" \n;\ntrans \"billing\"\nin \"40\" \nout \"helper_place_0\" \n;\ntrans \"sales order\"\nin \"47\" \nout \"11\" \n;\ntrans \"shipping\"\nin \"11\" \nout \"40\" \n;\n"},
+          { name: "search6", model: "\nplace \"27_place\";\nplace \"19\";\nplace \"20\";\nplace \"15\";\nplace \"13\";\nplace \"12\";\nplace \"11\";\nplace \"start_1\" init 1;\nplace \"start_0_place\";\nplace \"helper_place_1\";\n\ntrans \"26_transition\"\nin \"helper_place_1\" \nout \"19\" \"15\" \n;\ntrans \"picking\"\nin \"13\" \nout \"20\" \n;\ntrans \"delivery processing\"\nin \"27_place\" \nout \"13\" \n;\ntrans \"START FUNCTION\"\nin \"start_1\" \nout \"start_0_place\" \n;\ntrans \"packing processing\"\nin \"20\" \nout \"helper_place_1\" \n;\ntrans \"helper_transition_0[{XOR}->{delivery_without_reference_is_to_be_created}]\"\nin \"start_0_place\" \nout \"11\" \n;\ntrans \"helper_transition_2[{XOR}->{delivery_is_to_be_created}]\"\nin \"start_0_place\" \nout \"12\" \n;\ntrans \"helper_transition_3[{delivery_is_to_be_created}->{XOR}]\"\nin \"12\" \nout \"27_place\" \n;\ntrans \"helper_transition_4[{delivery_without_reference_is_to_be_created}->{XOR}]\"\nin \"11\" \nout \"27_place\" \n;\n"},
+          { name: "search8", model: "\nplace \"18\";\nplace \"17\";\nplace \"16\";\nplace \"15\";\nplace \"14\";\nplace \"12\";\nplace \"11\";\nplace \"10\";\nplace \"9\";\nplace \"8\";\nplace \"59_place\";\nplace \"58_place\";\nplace \"6\";\nplace \"5\";\nplace \"xor/and_helper_1\";\nplace \"helper_place_3\";\nplace \"helper_place_4\" init 1;\nplace \"helper_place_5\";\n\ntrans \"57_transition\"\nin \"helper_place_5\" \nout \"12\" \"17\" \"11\" \n;\ntrans \"56_transition\"\nin \"xor/and_helper_1\" \nout \"8\" \"5\" \n;\ntrans \"monitoring of legal controls\"\nin \"15\" \nout \"10\" \n;\ntrans \"55_transition\"\nin \"helper_place_3\" \nout \"9\" \"15\" \"14\" \"59_place\" \n;\ntrans \"transportation planning and processing\"\nin \"16\" \nout \"18\" \n;\ntrans \"delivery processing\"\nin \"helper_place_4\" \nout \"helper_place_3\" \n;\ntrans \"goods issue processing\"\nin \"58_place\" \nout \"helper_place_5\" \n;\ntrans \"xor/and_helper_0\"\nin \"59_place\" \nout \"xor/and_helper_1\" \n;\ntrans \"helper_transition_2[{XOR}->{material_is_removed_from_stock}]\"\nin \"59_place\" \nout \"6\" \n;\ntrans \"helper_transition_6[{material_withdrawal_is_to_be_posted}->{XOR}]\"\nin \"18\" \nout \"58_place\" \n;\ntrans \"helper_transition_7[{inspection_lot_status_allows_a_goods_issue}->{XOR}]\"\nin \"helper_place_4\" \nout \"58_place\" \n;\ntrans \"helper_transition_8[{XOR}->{delivery_is_relevant_for_shipment}]\"\nin \"59_place\" \nout \"16\" \n;\n"},
+          { name: "search9", model: "\nplace \"19\";\nplace \"18\";\nplace \"17\";\nplace \"16\";\nplace \"15\";\nplace \"14\";\nplace \"13\" init 1;\nplace \"12\";\nplace \"11\";\nplace \"10\";\nplace \"9\";\nplace \"8\";\nplace \"7\";\nplace \"6\";\nplace \"5\";\nplace \"22_place\";\nplace \"20\";\nplace \"helper_place_1\";\nplace \"helper_place_2\";\nplace \"helper_place_3\";\n\ntrans \"26_transition\"\nin \"helper_place_3\" \nout \"19\" \"15\" \n;\ntrans \"picking\"\nin \"13\" \nout \"helper_place_1\" \n;\ntrans \"24_transition\"\nin \"helper_place_1\" \nout \"14\" \"20\" \n;\ntrans \"delivery processing\"\nin \"19\" \nout \"helper_place_2\" \n;\ntrans \"packing processing\"\nin \"20\" \nout \"helper_place_3\" \n;\ntrans \"goods issue processing\"\nin \"14\" \nout \"22_place\" \n;\ntrans \"21_transition\"\nin \"helper_place_2\" \nout \"11\" \"8\" \"10\" \"12\" \"18\" \"16\" \n;\ntrans \"helper_transition_0[{XOR}->{transfer_order_created_automatically}]\"\nin \"22_place\" \nout \"6\" \n;\ntrans \"helper_transition_4[{XOR}->{material_is_issued}]\"\nin \"22_place\" \nout \"17\" \n;\ntrans \"helper_transition_5[{XOR}->{transfer_order_created_manually}]\"\nin \"22_place\" \nout \"7\" \n;\ntrans \"helper_transition_6[{XOR}->{goods_receipt/_issue_slip_is_printed}]\"\nin \"22_place\" \nout \"5\" \n;\ntrans \"helper_transition_7[{XOR}->{goods_issue_is_posted}]\"\nin \"22_place\" \nout \"9\" \n;\n"},
+          { name: "search10", model: "\nplace \"18_place\";\nplace \"16\";\nplace \"15\";\nplace \"14\";\nplace \"13\";\nplace \"12\";\nplace \"11\";\nplace \"start_1\" init 1;\nplace \"10\";\nplace \"start_0_place\";\nplace \"9\";\nplace \"8\";\nplace \"7\";\nplace \"6\";\nplace \"21_place\";\nplace \"20_place\";\nplace \"helper_place_1\";\nplace \"helper_place_7\";\n\ntrans \"17_transition\"\nin \"helper_place_1\" \nout \"20_place\" \"13\" \n;\ntrans \"START FUNCTION\"\nin \"start_1\" \nout \"start_0_place\" \n;\ntrans \"invoice processing with reference\"\nin \"18_place\" \nout \"21_place\" \n;\ntrans \"invoicing plan settlement\"\nin \"9\" \nout \"20_place\" \n;\ntrans \"invoice release\"\nin \"6\" \nout \"helper_place_7\" \n;\ntrans \"invoice overview\"\nin \"16\" \nout \"20_place\" \n;\ntrans \"evaluated receipt settlement ers\"\nin \"12\" \nout \"helper_place_1\" \n;\ntrans \"51_transition\"\nin \"helper_place_7\" \nout \"8\" \"15\" \n;\ntrans \"helper_transition_0[{XOR}->{service_is_accepted}]\"\nin \"start_0_place\" \nout \"7\" \n;\ntrans \"helper_transition_2[{XOR}->{invoice_posted}]\"\nin \"20_place\" \nout \"6\" \n;\ntrans \"helper_transition_3[{XOR}->{goods_receipt_posted}]\"\nin \"start_0_place\" \nout \"11\" \n;\ntrans \"helper_transition_4[{XOR}->{invoice_received}]\"\nin \"start_0_place\" \nout \"10\" \n;\ntrans \"helper_transition_5[{goods_receipt_posted}->{XOR}]\"\nin \"11\" \nout \"18_place\" \n;\ntrans \"helper_transition_6[{XOR}->{purchase_order_created}]\"\nin \"start_0_place\" \nout \"14\" \n;\ntrans \"helper_transition_8[{purchase_order_created}->{XOR}]\"\nin \"14\" \nout \"18_place\" \n;\ntrans \"helper_transition_9[{XOR}->{invoicing_plans_require_settlement}]\"\nin \"21_place\" \nout \"9\" \n;\ntrans \"helper_transition_10[{invoice_received}->{XOR}]\"\nin \"10\" \nout \"18_place\" \n;\ntrans \"helper_transition_11[{service_is_accepted}->{XOR}]\"\nin \"7\" \nout \"18_place\" \n;\ntrans \"helper_transition_12[{XOR}->{goods_receipts_to_be_settled_automatically}]\"\nin \"21_place\" \nout \"12\" \n;\ntrans \"helper_transition_13[{XOR}->{invoice_parked}]\"\nin \"21_place\" \nout \"16\" \n;\n"}
+        ],
+        candidates: ["1Be_204a_no_events.tpn", "1Be_22v7_no_events.tpn", "1Be_25fz_no_events.tpn", "1Be_25my_no_events.tpn", "1Be_2aze_no_events.tpn", "1Be_2ft2_no_events.tpn", "1Be_2gm6_no_events.tpn", "1Be_2ork_no_events.tpn", "1Be_2rxu_no_events.tpn", "1Be_2tnc_no_events.tpn", "1Be_2vbl_no_events.tpn", "1Be_30t8_no_events.tpn", "1Be_322n_no_events.tpn", "1Be_32fe_no_events.tpn", "1Be_34is_no_events.tpn", "1Be_38qs_no_events.tpn", "1Be_3a62_no_events.tpn", "1Be_3e7i_no_events.tpn", "1Be_3era_no_events.tpn", "1Be_3j4l_no_events.tpn", "1Be_8ri3_no_events.tpn", "1Be_8uyu_no_events.tpn", "1Ku_8w3g_no_events.tpn", "1Ku_91bx_no_events.tpn", "1Ku_96oz_no_events.tpn", "1Ku_9bjf_no_events.tpn", "1Ku_9do6_no_events.tpn", "1Ku_9e6t_no_events.tpn", "1Ku_9ojw_no_events.tpn", "1Ku_9rnu_no_events.tpn", "1Ku_9yyx_no_events.tpn", "1Ku_9zhk_no_events.tpn", "1Ku_a0t4_no_events.tpn", "1Ku_a6af_no_events.tpn", "1Ku_acul_no_events.tpn", "1Ku_add8_no_events.tpn", "1Ku_afas_no_events.tpn", "1Ku_agg3_no_events.tpn", "1Ve_4fin_no_events.tpn", "1Ve_4gw1_no_events.tpn", "1Ve_4hbk_no_events.tpn", "1Ve_4k75_no_events.tpn", "1Ve_4mai_no_events.tpn", "1Ve_4mua_no_events.tpn", "1Ve_4mxc_no_events.tpn", "1Ve_4ose_no_events.tpn", "1Ve_4q66_no_events.tpn", "1Ve_4ymf_no_events.tpn", "1Ve_512s_no_events.tpn", "1Ve_57p5_no_events.tpn", "1Ve_58l9_no_events.tpn", "1Ve_5a31_no_events.tpn", "1Ve_5jtb_no_events.tpn", "1Ve_5kzj_no_events.tpn", "1Ve_5tcy_no_events.tpn", "1Ve_5x4o_no_events.tpn", "1Ve_5ycw_no_events.tpn", "1Ve_6294_no_events.tpn", "1Ve_62rl_no_events.tpn", "1Ve_6a59_no_events.tpn", "1Ve_6bms_no_events.tpn", "1Ve_6dlt_no_events.tpn", "1Ve_6lp9_no_events.tpn", "1Ve_6mnb_no_events.tpn", "1Ve_6u91_no_events.tpn", "1Ve_6wdf_no_events.tpn", "1Ve_70sp_no_events.tpn", "1Ve_710u_no_events.tpn", "1Ve_77z0_no_events.tpn", "1Ve_7btr_no_events.tpn", "1Ve_7coq_no_events.tpn", "1Ve_7kcl_no_events.tpn", "1Ve_7n23_no_events.tpn", "1Ve_7rr4_no_events.tpn", "1Ve_7s3r_no_events.tpn", "1Ve_7sma_no_events.tpn", "1Ve_7vev_no_events.tpn", "1Ve_82t3_no_events.tpn", "1Ve_84am_no_events.tpn", "1Ve_85il_no_events.tpn", "1Ve_8a7d_no_events.tpn", "1Ve_8b2j_no_events.tpn", "1Ve_8bao_no_events.tpn", "1Ve_m47b_no_events.tpn", "1Ve_mzcb_no_events.tpn"],
+        measurements: [],
+        gridOptions: {
+          data: 'data.qualityExperiment.measurements'
+        }
+      };
+
+      $scope.qualityExperiment = function() {
+        // Select Similarity Search
+        $scope.data.selectedAlgorithm = $scope.data.availableAlgorithms[2];
+
+        // Select all models (should use candidates list)
+        $scope.data.selectedModels = $scope.data.availableModels;
+
+        var effectiveness = function(searchModel, models) {
+          var intersection = _.reduce(models, function(memo, model) {
+            if (typeof HumanEvaluation.find(searchModel, model.filename) !== "undefined")
+              return memo + 1;
+            else
+              return memo;
+          }, 0);
+
+          var precision = intersection / models.length;
+          var recall = intersection / HumanEvaluation.relevantModels(searchModel).length;
+          var fscore = 2 * (precision * recall) / (precision + recall);
+          var overall = recall * (2 - 1 / precision);
+
+          return {
+            precision: precision,
+            recall: recall,
+            fscore: fscore,
+            overall: overall
+          };
+        };
+
+        var run = function(query_index) {
+          var deferred = $q.defer();
+          $scope.data.qualityExperiment.measurements = [];
+
+          var _recursive_run = function(query_index) {
+            if (query_index == $scope.data.qualityExperiment.queries.length) {
+              deferred.resolve(true);
+              return;
+            }
+
+            $scope.data.qualityExperiment.currentStage = "Loading all candidate models";
+            $scope.loadModels().then(function() {
+              $scope.data.searchModel = $scope.data.qualityExperiment.queries[query_index].model;
+              $scope.data.qualityExperiment.currentStage = "Searching for query " + $scope.data.qualityExperiment.queries[query_index].name;
+              $scope.search().then(function(result) {
+                var evaluation = effectiveness($scope.data.qualityExperiment.queries[query_index].name, result.data.models);
+                evaluation.search = $scope.data.qualityExperiment.queries[query_index].name;
+                $scope.data.qualityExperiment.measurements.push(evaluation);
+                _recursive_run(query_index+1);
+              });
+            });
+          };
+
+          _.defer(_recursive_run, query_index);
+
+          return deferred.promise;
+        };
+
+        run(0).then(function() {
+          console.log("Quality measures done!");
+          console.log($scope.data.qualityExperiment.measurements);
+        });
+      }
+
     }
     MainCtrl.$inject = ['$scope', '$window', '$http', '$q'];
 
@@ -208,10 +297,22 @@
       </div>
     </div>
     <div class="row">
-      <h4>Number of Comparisons / Number of models in repository</h4>
-      <input type="number" ng-model="data.comparisonExperiment.stepSize" placeholder="Number of models to add per step">
-      <button class="btn" ng-click="comparisonExperiment()">Run Experiment</button>
-      <chart style="margin-bottom: 100px" class="clearfix" ng-model='data.comparisonExperiment.plot'></chart>
+      <div class="span6">
+        <h4>Number of Comparisons / Number of models in repository</h4>
+        <input type="number" ng-model="data.comparisonExperiment.stepSize" placeholder="Number of models to add per step">
+        <button class="btn" ng-click="comparisonExperiment()">Run Experiment</button>
+        <chart style="margin-bottom: 100px" class="clearfix" ng-model='data.comparisonExperiment.plot'></chart>
+      </div>
+    </div>
+    <div class="row">
+      <div class="span6">
+        <h4>Quality Measures</h4>
+        {{ data.qualityExperiment.currentStage }}<br>
+        <button class="btn" ng-click="qualityExperiment()">Run Experiment</button>
+      </div>
+    </div>
+    <div class="row">
+      <div class="span6" style="height: 400px" ng-grid="data.qualityExperiment.gridOptions"></div>
     </div>
   </div>
 </body>

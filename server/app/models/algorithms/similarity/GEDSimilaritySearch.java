@@ -46,9 +46,10 @@ public class GEDSimilaritySearch implements SearchAlgorithm
     protected final String MODEL_PATH = "/Users/bart/Projekte/MA/EfficientSimilaritySearch/comin2011/tpn";
     protected static final float QUERY_RADIUS = 0.5f;
     protected static final int QUERY_K = 10;
+    protected static final int QUERY_LOOKAHEAD = 10000;
     public Set<IDatapoint> loadedModels = new HashSet<>();
 
-    // Hardcoded to 50 in Matthias' code too
+    // Hardcoded to 50 in Matthias' code
     public int nodesize = 10;
 
     @Override

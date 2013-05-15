@@ -34,7 +34,7 @@ public class SeqBpSimilaritySearch extends BpSimilaritySearch {
         // simulate retrieval of k nearest neighbor access
         int i = 0;
         Iterator<ResultData> res = intermediateResults.iterator();
-        while(res.hasNext() && i < 10) {
+        while(res.hasNext() && i < Integer.valueOf((String)this.parameters.get("k-value"))) {
             i++;
             ResultData d = res.next();
             System.out.println("distance(query, " + d.p.getId() + ") = " + d.distance);

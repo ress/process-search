@@ -39,7 +39,7 @@ public class BpSimilaritySearch extends GEDSimilaritySearch {
     @Override
     public void initialize(HashMap<String, Object> parameters) {
         this.parameters = parameters;
-        repository = new Repository<>("/tmp/bpsimsearch" + this.parameters.get("k-value") + ".repo");
+        repository = new Repository<>("/tmp/bpsimsearch" + QUERY_LOOKAHEAD + ".repo");
         super.initialize();
         repository.save();
     }
@@ -56,7 +56,7 @@ public class BpSimilaritySearch extends GEDSimilaritySearch {
         HashMap<String, Object> k_value = new HashMap<>();
         k_value.put("name", "k-value");
         k_value.put("type", "number");
-        k_value.put("default", "10000");
+        k_value.put("default", "10");
 
         parameters.add(k_value);
 
@@ -69,7 +69,7 @@ public class BpSimilaritySearch extends GEDSimilaritySearch {
 
     public HashMap<String, Object> getDefaultParameters() {
         HashMap<String, Object> parameters = new HashMap<>();
-        parameters.put("k-value", "10000");
+        parameters.put("k-value", "10");
         return parameters;
     }
 
@@ -92,12 +92,13 @@ public class BpSimilaritySearch extends GEDSimilaritySearch {
     @Override
     public ArrayList<SearchResult> search(NetSystem processModel) {
         ArrayList<SearchResult> results = new ArrayList<>();
+        Integer k_value = Integer.valueOf((String)this.parameters.get("k-value"));
 
         IDatapoint query = new RelSetDatapoint(RelSetCreatorUnfolding.getInstance().deriveRelationSet(processModel));
         query.setId("Query-" + UUID.randomUUID().toString());
 
         // knn query ---------------------------------------------------------------------------
-        final Sphere queryPoint = new Sphere(query, 1f, null, -1, this.metric);
+        final Sphere queryPoint = new Sphere(query, 0.5f, null, -1, this.metric);
         // internal NN Query Cursor deals with a candidate objects
         Comparator distanceComparator = new Comparator () {
             public int compare (Object candidate1, Object candidate2) {
@@ -114,29 +115,30 @@ public class BpSimilaritySearch extends GEDSimilaritySearch {
 
         // run k-NN use taker get 5-NN points
         // Note: mtree.query(queue) method deals with object of Type candidate
-        // to extract actual data we should call candidate.descriptor() or entry() method
+        // MTree queries don't support the k-value for kNN queries right now
         Measurement.start("BPSimilaritySearch.knnSearch");
         //Iterator kNNresult = this.tree.query(queryPoint);
-        Iterator kNNresult = new Taker(this.tree.query(new DynamicHeap(distanceComparator)), QUERY_K);
+        Iterator kNNresult = new Taker(this.tree.query(new DynamicHeap(distanceComparator)), k_value);
         Measurement.stop("BPSimilaritySearch.knnSearch");
 
-        //Measurement.step("BPSimilaritySearch.MetricComparisons", this.metric.getNumberOfComparisons());
         this.metric.resetCounter();
-        int number = 0;
-        while(kNNresult.hasNext()){
+        while (kNNresult.hasNext()) {
+            //*  <-- Toggle the first / to switch between Sequential and MTree queries
             Sphere obj = (Sphere)((Tree.Query.Candidate)kNNresult.next()).descriptor();
             IDatapoint current = (IDatapoint) obj.center();
             System.out.println(obj.center() + "; distance to query point:  " + queryPoint.centerDistance(obj) );
-            // Skip obviously bad results
-            if (queryPoint.centerDistance(obj) < 1) {
-                results.add(new SearchResult(((RelSetDatapoint)obj.center()).getId(), current.getModel(), queryPoint.centerDistance(obj)));
-            }
-            //RelSetDatapoint p = (RelSetDatapoint)kNNresult.next();
-            //results.add(new SearchResult(p.getId(), p.getModel()));
-            number++;
-        }
-        Measurement.step("BPSimilaritySearch.MetricComparisons", this.metric.getNumberOfComparisons());
 
+            // Skip obviously bad results
+            //if (queryPoint.centerDistance(obj) < 1) {
+                results.add(new SearchResult(((RelSetDatapoint)obj.center()).getId(), current.getModel(), queryPoint.centerDistance(obj)));
+            //}
+            /*/
+            RelSetDatapoint p = (RelSetDatapoint)kNNresult.next();
+            results.add(new SearchResult(p.getId(), p.getModel()));
+            //*/
+        }
+
+        Measurement.step("BPSimilaritySearch.MetricComparisons", this.metric.getNumberOfComparisons());
         this.metric.resetCounter();
 
         return results;
@@ -159,13 +161,13 @@ public class BpSimilaritySearch extends GEDSimilaritySearch {
 
                 // deriveRelationSet(net, 1) derives relation sets with a lookahead of 1, i.e., alpha relations
                 Measurement.start("BPSimiliaritySearch.load");
-                relset = RelSetCreatorUnfolding.getInstance().deriveRelationSet(net, Integer.valueOf((String)this.parameters.get("k-value")));
+                relset = RelSetCreatorUnfolding.getInstance().deriveRelationSet(net, QUERY_LOOKAHEAD);
                 Measurement.stop("BPSimiliaritySearch.load");
                 repository.put(modelFileName, relset);
             }
 
             relsetdp = new RelSetDatapoint(relset);
-            relsetdp.setLookAhead(Integer.valueOf((String)this.parameters.get("k-value")));
+            relsetdp.setLookAhead(QUERY_LOOKAHEAD);
             relsetdp.setId(modelFileName);
         } catch (Exception e) {
             e.printStackTrace();

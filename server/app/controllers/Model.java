@@ -89,10 +89,16 @@ public class Model extends Controller {
         }
 
         Logger.info("Setting Repository.selectedModels to " + modelsToLoad.toString());
-        Repository.selectedModels = modelsToLoad;
 
         // Reset all indexes
-        SearchEngine.getInstance().resetAlgorithms();
+        if (!Repository.selectedModels.equals(modelsToLoad)) {
+            Repository.selectedModels = modelsToLoad;
+            SearchEngine.getInstance().resetAlgorithms();
+
+            Logger.info("Reloading models");
+        } else {
+            Logger.info("Reloading models not necessary, no changes.");
+        }
 
         response().setHeader("Access-Control-Allow-Origin", "*");
         return ok();
