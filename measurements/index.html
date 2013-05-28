@@ -10,6 +10,7 @@
   <script src="components/bootstrap/js/bootstrap.js"></script>
   <script src="components/underscore/underscore.js"></script>
   <script src="components/Flot/jquery.flot.js"></script>
+  <script src="js/jquery.flot.axislabels.js"></script>
   <script src="human-eval.js"></script>
   <style type="text/css">
     chart {
@@ -68,11 +69,17 @@
         $scope.data.numAutomaticModels = v.length;
       });
 
-      $scope.search = function(callback) {
+      $scope.search = function(parameters) {
+        var _parameters;
+        if (typeof parameters !== "undefined") {
+          _parameters = parameters;
+        } else {
+          _parameters = {'k-value': '10'};
+        }
         var data = {
-          'tpn': $scope.data.searchModel,
+          'tpn': $scope.data.searchModel.model,
           'algorithm': $scope.data.selectedAlgorithm.name,
-          'parameters': {'k-value':"10"}
+          'parameters': _parameters
         };
 
         return $http({ method: 'POST', url: baseURI + "/search", data: data })
@@ -90,12 +97,27 @@
 
       $scope.data.comparisonExperiment = {
         stepSize: 5,
-        plot: [[[0, 1], [1, 5], [2, 2]]]
+        plot: [],
+        plotOptions: {
+          xaxis: {
+            min: 0,
+            show: true,
+            axisLabel: 'Number of loaded models',
+            position: 'bottom'
+          },
+          yaxis: {
+            min: 0,
+            show: true,
+            axisLabel: 'Measurement',
+            position: 'left'
+          }
+        },
       };
 
       $scope.comparisonExperiment = function() {
         var plots = {};
         var stepSize = $scope.data.comparisonExperiment.stepSize;
+        $scope.data.searchModel = $scope.data.qualityExperiment.queries[0];
 
         // Calculating the steps in which models are loaded
         var steps = [];
@@ -182,9 +204,151 @@
         ],
         candidates: ["1Be_204a_no_events.tpn", "1Be_22v7_no_events.tpn", "1Be_25fz_no_events.tpn", "1Be_25my_no_events.tpn", "1Be_2aze_no_events.tpn", "1Be_2ft2_no_events.tpn", "1Be_2gm6_no_events.tpn", "1Be_2ork_no_events.tpn", "1Be_2rxu_no_events.tpn", "1Be_2tnc_no_events.tpn", "1Be_2vbl_no_events.tpn", "1Be_30t8_no_events.tpn", "1Be_322n_no_events.tpn", "1Be_32fe_no_events.tpn", "1Be_34is_no_events.tpn", "1Be_38qs_no_events.tpn", "1Be_3a62_no_events.tpn", "1Be_3e7i_no_events.tpn", "1Be_3era_no_events.tpn", "1Be_3j4l_no_events.tpn", "1Be_8ri3_no_events.tpn", "1Be_8uyu_no_events.tpn", "1Ku_8w3g_no_events.tpn", "1Ku_91bx_no_events.tpn", "1Ku_96oz_no_events.tpn", "1Ku_9bjf_no_events.tpn", "1Ku_9do6_no_events.tpn", "1Ku_9e6t_no_events.tpn", "1Ku_9ojw_no_events.tpn", "1Ku_9rnu_no_events.tpn", "1Ku_9yyx_no_events.tpn", "1Ku_9zhk_no_events.tpn", "1Ku_a0t4_no_events.tpn", "1Ku_a6af_no_events.tpn", "1Ku_acul_no_events.tpn", "1Ku_add8_no_events.tpn", "1Ku_afas_no_events.tpn", "1Ku_agg3_no_events.tpn", "1Ve_4fin_no_events.tpn", "1Ve_4gw1_no_events.tpn", "1Ve_4hbk_no_events.tpn", "1Ve_4k75_no_events.tpn", "1Ve_4mai_no_events.tpn", "1Ve_4mua_no_events.tpn", "1Ve_4mxc_no_events.tpn", "1Ve_4ose_no_events.tpn", "1Ve_4q66_no_events.tpn", "1Ve_4ymf_no_events.tpn", "1Ve_512s_no_events.tpn", "1Ve_57p5_no_events.tpn", "1Ve_58l9_no_events.tpn", "1Ve_5a31_no_events.tpn", "1Ve_5jtb_no_events.tpn", "1Ve_5kzj_no_events.tpn", "1Ve_5tcy_no_events.tpn", "1Ve_5x4o_no_events.tpn", "1Ve_5ycw_no_events.tpn", "1Ve_6294_no_events.tpn", "1Ve_62rl_no_events.tpn", "1Ve_6a59_no_events.tpn", "1Ve_6bms_no_events.tpn", "1Ve_6dlt_no_events.tpn", "1Ve_6lp9_no_events.tpn", "1Ve_6mnb_no_events.tpn", "1Ve_6u91_no_events.tpn", "1Ve_6wdf_no_events.tpn", "1Ve_70sp_no_events.tpn", "1Ve_710u_no_events.tpn", "1Ve_77z0_no_events.tpn", "1Ve_7btr_no_events.tpn", "1Ve_7coq_no_events.tpn", "1Ve_7kcl_no_events.tpn", "1Ve_7n23_no_events.tpn", "1Ve_7rr4_no_events.tpn", "1Ve_7s3r_no_events.tpn", "1Ve_7sma_no_events.tpn", "1Ve_7vev_no_events.tpn", "1Ve_82t3_no_events.tpn", "1Ve_84am_no_events.tpn", "1Ve_85il_no_events.tpn", "1Ve_8a7d_no_events.tpn", "1Ve_8b2j_no_events.tpn", "1Ve_8bao_no_events.tpn", "1Ve_m47b_no_events.tpn", "1Ve_mzcb_no_events.tpn"],
         measurements: [],
+        plot: [],
+        plotOptions: {
+          xaxis: {
+            show: true,
+            min: 0,
+            max: 1,
+            ticks: [0, 0.5, 1],
+            axisLabel: 'recall',
+            position: 'bottom'
+          },
+          yaxis: {
+            show: true,
+            min: 0,
+            max: 1,
+            ticks: [0, 0.5, 1],
+            axisLabel: 'precision',
+            position: 'left'
+          }
+        },
         gridOptions: {
           data: 'data.qualityExperiment.measurements'
-        }
+        },
+        curvePlot: [],
+        curvePlotSelected: [],
+        curvePlotOptions: {
+          xaxis: {
+            show: true,
+            min: 0,
+            max: 1,
+            ticks: 6,
+            axisLabel: 'recall',
+            position: 'bottom'
+          },
+          yaxis: {
+            show: true,
+            min: 0,
+            max: 1,
+            ticks: 6,
+            axisLabel: 'precision',
+            position: 'left'
+          },
+          grid: {
+            //autoHighlight: true,
+            //hoverable: true,
+            //clickable: true
+
+          }
+        },
+      };
+
+      $scope.precisionRecallCurve = function() {
+         // Select Similarity Search
+        $scope.data.selectedAlgorithm = $scope.data.availableAlgorithms[2];
+
+        var calculatePrecisionRecall = function(searchModel, results) {
+          var recallSteps = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1];
+          var precisionAt = {
+            '0': 1, '0.1': 0, '0.2': 0, '0.3': 0, '0.4': 0, '0.5': 0,
+            '0.6': 0, '0.7': 0, '0.8': 0, '0.9': 0, '1': 0
+          };
+          var numRelevantModels = HumanEvaluation.relevantModels(searchModel).length;
+          // Calculate precision for each recall step
+          for (var i = 1; i < recallSteps.length; i++) {
+            // Iterate over all search results until we arrive at the desired
+            // recall value
+            var numFoundRelevant = 0;
+            for (var j = 0; j < results.length; j++) {
+              if (HumanEvaluation.find(searchModel, results[j].filename))
+                numFoundRelevant++;
+
+              if (numFoundRelevant / numRelevantModels >= recallSteps[i]) {
+                precisionAt['' + recallSteps[i]] = numFoundRelevant / (j+1);
+                break;
+              }
+            }
+          }
+
+          return precisionAt;
+        };
+
+        var performExperiment = function(searchModel) {
+          return function(aggregatedResults) {
+            console.log(searchModel, ": Experiment started");
+            var deferred = $q.defer();
+            $scope.data.searchModel = searchModel;
+
+            _.defer(function() {
+              $scope.search({'k-value': '' + $scope.data.availableModels.length}).then(
+              function(result) {
+                var precisionAt = calculatePrecisionRecall(searchModel.name, result.data.models);
+                console.log(searchModel, ": Experiment done");
+                aggregatedResults[searchModel.name] = precisionAt;
+                deferred.resolve(aggregatedResults);
+              });
+            });
+
+            return deferred.promise;
+          };
+        };
+
+        var experiments = _.map($scope.data.qualityExperiment.queries, function(query) {
+          return performExperiment(query);
+        })
+
+        _.reduce(experiments, $q.when, {}).then(function(res) {
+          var aggregatePrecision = [];
+          var tmpPrecisionRecall = {};
+
+          _.each(res, function(result) {
+            _.each(result, function(precision, recall) {
+              if (!_.has(tmpPrecisionRecall, recall))
+                tmpPrecisionRecall[recall] = [];
+
+              tmpPrecisionRecall[recall].push(precision);
+            });
+          });
+
+          var individualPrecisions = _.map(res, function(result, searchModel) {
+            return { label: searchModel, data: _.sortBy(_.map(result, function(precision, recall) {
+              return [recall, precision];
+            }), function(a) { return parseInt(a[0], 10) }) };
+          });
+
+          console.log(individualPrecisions);
+
+          aggregatePrecision = _.map(tmpPrecisionRecall, function(precisions, recall) {
+            return [recall, _.reduce(precisions, function(a, b) { return a + b; }, 0) / precisions.length];
+          });
+
+          aggregatePrecision = _.sortBy(aggregatePrecision, function(a) {
+            return parseInt(a[0], 10);
+          });
+
+          //$scope.data.qualityExperiment.curvePlot = [{ data: aggregatePrecision }];
+          individualPrecisions.unshift({ label: 'aggregate', data: aggregatePrecision });
+          $scope.data.qualityExperiment.curvePlot = individualPrecisions;
+          $scope.data.qualityExperiment.curvePlotSelected = [_.find($scope.data.qualityExperiment.curvePlot, function(plot) {
+            return plot.label == "aggregate";
+          })];
+        });
+
+          //experiments[0]({}).then(experiments[1]).then(function(res) { console.log(res); });
+
+        // Select all models (should use candidates list)
+        //$scope.data.selectedModels = $scope.data.availableModels;
       };
 
       $scope.qualityExperiment = function() {
@@ -215,6 +379,11 @@
           };
         };
 
+        var add_measurement = function(measurement) {
+          $scope.data.qualityExperiment.measurements.push(measurement);
+          $scope.data.qualityExperiment.plot = [{ data: _.map($scope.data.qualityExperiment.measurements, function(measurement) { return [measurement.recall, measurement.precision]; }), points: { show: true }}];
+        }
+
         var run = function(query_index) {
           var deferred = $q.defer();
           $scope.data.qualityExperiment.measurements = [];
@@ -227,12 +396,13 @@
 
             $scope.data.qualityExperiment.currentStage = "Loading all candidate models";
             $scope.loadModels().then(function() {
-              $scope.data.searchModel = $scope.data.qualityExperiment.queries[query_index].model;
+              $scope.data.searchModel = $scope.data.qualityExperiment.queries[query_index];
               $scope.data.qualityExperiment.currentStage = "Searching for query " + $scope.data.qualityExperiment.queries[query_index].name;
               $scope.search().then(function(result) {
                 var evaluation = effectiveness($scope.data.qualityExperiment.queries[query_index].name, result.data.models);
                 evaluation.search = $scope.data.qualityExperiment.queries[query_index].name;
-                $scope.data.qualityExperiment.measurements.push(evaluation);
+
+                add_measurement(evaluation);
                 _recursive_run(query_index+1);
               });
             });
@@ -260,7 +430,12 @@
 
             scope.$watch(attrs.ngModel, function(v) {
               if (!chart) {
-                chart = $.plot(elem, v, {});
+                var options = {};
+                if (typeof attrs.ngFlotOptions !== "undefined")
+                  options = scope.$eval(attrs.ngFlotOptions);
+                else
+                  options = {};
+                chart = $.plot(elem, v, options);
                 jQuery(elem).show();
               } else {
                 chart.setData(v);
@@ -273,7 +448,7 @@
 });
   </script>
 </head>
-<body ng-controller="MainCtrl" ng-init="init()">
+<body ng-cloak ng-controller="MainCtrl" ng-init="init()">
   <div class="container" style="margin: 50px">
     <div class="row">
       <h4>Manual Settings</h4>
@@ -291,28 +466,66 @@
     <div class="row">
       <div class="span6">
         <label class="label" for="searchModel">Query model</label>
-        <textarea name="searchModel" ng-model="data.searchModel" class="span6" style="height: 200px">
+        <select style="width: 100%" ng-model="data.searchModel" ng-options="searchModel.name for searchModel in data.qualityExperiment.queries"></select>
+        <textarea name="searchModel" ng-model="data.searchModel.model" class="span6" style="height: 200px">
         </textarea>
-        <button class="btn" ng-click="search()">Search</button>
+        <div>
+          <button class="btn" ng-click="search()">Search</button>
+        </div>
       </div>
     </div>
     <div class="row">
+      <h1 class="well">Trend Analysis</h1>
       <div class="span6">
-        <h4>Number of Comparisons / Number of models in repository</h4>
-        <input type="number" ng-model="data.comparisonExperiment.stepSize" placeholder="Number of models to add per step">
-        <button class="btn" ng-click="comparisonExperiment()">Run Experiment</button>
-        <chart style="margin-bottom: 100px" class="clearfix" ng-model='data.comparisonExperiment.plot'></chart>
+        <p>In this experiment the metrics reported by the various search algorithms are displayed over an increasing number of loaded models.</p>
+        <label for="stepSize">Step size:</label>
+        <input type="number" name="stepSize" ng-model="data.comparisonExperiment.stepSize" placeholder="Number of models to add per step">
+        <div>
+          <button class="btn btn-primary" ng-click="comparisonExperiment()">Run Experiment</button>
+        </div>
       </div>
-    </div>
-    <div class="row">
       <div class="span6">
-        <h4>Quality Measures</h4>
-        {{ data.qualityExperiment.currentStage }}<br>
-        <button class="btn" ng-click="qualityExperiment()">Run Experiment</button>
+        <chart style="margin-bottom: 100px" class="clearfix" ng-flot-options="data.comparisonExperiment.plotOptions" ng-model='data.comparisonExperiment.plot'></chart>
       </div>
     </div>
     <div class="row">
-      <div class="span6" style="height: 400px" ng-grid="data.qualityExperiment.gridOptions"></div>
+      <h1 class="well">Quality Evaluation</h1>
+      <h4>Precision/Recall chart</h4>
+      <div class="row">
+        <div class="span12">
+          <p>In this experiment a search algorithm is evaluated against 10 queries and precision, recall, f-score and an overall quality measure are calcuated based based on the human quality evaluation for the SAP reference model in <em>Similarity of Business Process Models: Metrics and Evaluation</em> by Dijkman et al.</p>
+          <p>The results are displayed in the table on the right and in the precision/recall chart.</p>
+
+          <!--{{ data.qualityExperiment.currentStage }}<br>-->
+          <div>
+            <select ng-model="data.selectedAlgorithm" ng-options="algorithm.name for algorithm in data.availableAlgorithms"></select>
+          </div>
+          <button class="btn btn-primary" ng-click="qualityExperiment()">Run Experiment</button>
+        </div>
+      </div>
+      <div class="row" style="margin-top: 15px">
+        <div class="span6">
+          <chart class="clearfix" ng-model="data.qualityExperiment.plot" ng-flot-options="data.qualityExperiment.plotOptions"></chart>
+        </div>
+        <div class="span6" style="height: 400px" ng-grid="data.qualityExperiment.gridOptions"></div>
+      </div>
+    </div>
+    <div class="row">
+      <h4>Precision/Recall Curve</h4>
+      <div class="span6">
+        <p>This experiment calculates a precision/recall curve for a given search algorithm by performing 10 searches with different queries and evaluating the precision of the search results at each recall level, based on the human quality evaluation for the SAP reference model in <em>Similarity of Business Process Models: Metrics and Evaluation</em> by Dijkman et al.</p>
+        <div>
+          <select ng-model="data.selectedAlgorithm" ng-options="algorithm.name for algorithm in data.availableAlgorithms"></select>
+        </div>
+        <button class="btn btn-primary" ng-click="precisionRecallCurve()">Run Experiment</button>
+        <div ng-show="data.qualityExperiment.curvePlot.length > 0" style="margin-top: 20px;">
+          Select the curves that should be displayed:<br>
+          <select style="width: 100%; height: 100px;" ng-model="data.qualityExperiment.curvePlotSelected" multiple ng-options="value.label for (key, value) in data.qualityExperiment.curvePlot"></select>
+        </div>
+      </div>
+      <div class="span6">
+        <chart class="clearfix" ng-model="data.qualityExperiment.curvePlotSelected" ng-flot-options="data.qualityExperiment.curvePlotOptions"></chart>
+      </div>
     </div>
   </div>
 </body>

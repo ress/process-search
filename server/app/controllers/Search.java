@@ -80,7 +80,7 @@ public class Search extends Controller {
             String tpnModel = json.path("tpn").getTextValue();
             String algorithm = json.path("algorithm").getTextValue();
             HashMap<String, Object> parameters = jsonParametersToHash(json.path("parameters"));
-            Logger.info("search model, algorithm " + algorithm + ", JSON representation: " + jsonModel);
+            Logger.info("search model, algorithm " + algorithm + ", JSON representation: " + jsonModel + ", tpn Representation: " + tpnModel);
 
             SearchAlgorithm searchAlgorithm = engine.getAlgorithm(algorithm, parameters);
 
