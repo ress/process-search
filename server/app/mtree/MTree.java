@@ -10,6 +10,7 @@ import java.util.NoSuchElementException;
 import java.util.PriorityQueue;
 import java.util.Set;
 
+import models.simsearch.RelSetDatapoint;
 import mtree.SplitFunction.SplitResult;
 import mtree.utils.Pair;
 
@@ -429,6 +430,17 @@ public class MTree<DATA> {
 	public Query getNearest(DATA queryData) {
 		return new Query(queryData, Double.POSITIVE_INFINITY, Integer.MAX_VALUE);
 	}
+
+    public void dump() {
+        System.out.println("+ " + ((RelSetDatapoint)this.root.data).getId() + " (" + this.root.children.size() + ")");
+        for(Map.Entry<DATA, IndexItem> e : this.root.children.entrySet()) {
+            DATA data = e.getKey();
+            IndexItem child = e.getValue();
+
+            System.out.println(" +" + ((RelSetDatapoint)data).getId() + " (dTP: " + child.distanceToParent + ", " + this.distanceFunction.calculate(this.root.data, child.data) + ")");
+            child.dump("  ");
+        }
+    }
 	
 	
 	protected void _check() {
@@ -448,6 +460,10 @@ public class MTree<DATA> {
 			this.radius = 0;
 			this.distanceToParent = -1;
 		}
+
+        public void dump(String prefix) {
+            System.out.println(prefix + "- " + ((RelSetDatapoint)this.data).getId() + ": " + this.radius + " dTP: " + this.distanceToParent);
+        }
 
 		int _check() {
 			_checkRadius();
@@ -485,6 +501,16 @@ public class MTree<DATA> {
 			leafness.thisNode = this;
 			this.leafness = leafness;
 		}
+
+        @Override
+        public void dump(String prefix) {
+            super.dump(prefix);
+            for(Map.Entry<DATA, IndexItem> e : children.entrySet()) {
+                DATA data = e.getKey();
+                IndexItem child = e.getValue();
+                child.dump(prefix + " ");
+            }
+        }
 
 		private final void addData(DATA data, double distance) throws SplitNodeReplacement {
 			doAddData(data, distance);
@@ -526,7 +552,7 @@ public class MTree<DATA> {
 
 		private final void checkMaxCapacity() throws SplitNodeReplacement {
 			if(children.size() > MTree.this.maxNodeCapacity) {
-				DistanceFunction<? super DATA> cachedDistanceFunction = DistanceFunctions.cached(MTree.this.distanceFunction);
+				DistanceFunction<? super DATA> cachedDistanceFunction = MTree.this.distanceFunction; //DistanceFunctions.cached(MTree.this.distanceFunction);
 				SplitResult<DATA> splitResult = MTree.this.splitFunction.process(children.keySet(), cachedDistanceFunction);
 				
 				Node newNode0 = null;

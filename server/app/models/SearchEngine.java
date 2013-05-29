@@ -4,6 +4,7 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.HashMultimap;
 import models.algorithms.querying.QueryingByExample;
 import models.algorithms.similarity.BpSimilaritySearch;
+import models.algorithms.similarity.MtreeSimilaritySearch;
 import models.algorithms.similarity.SeqBpSimilaritySearch;
 
 import java.util.HashMap;
@@ -58,6 +59,8 @@ public class SearchEngine {
 
         // Similarity Search (Behavior Profile based, indexed)
         this.addSearchAlgorithm(new BpSimilaritySearch());
+
+        this.addSearchAlgorithm(new MtreeSimilaritySearch());
 
         // Initialize the algorithms: loading modules, building indexes, ...
         for (SearchAlgorithm algorithm : algorithms.values()) {
