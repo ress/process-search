@@ -39,7 +39,7 @@ public class SearchEngine {
 
     private void init() {
         // Querying by Example
-        SearchAlgorithm querying = new QueryingByExample();
+       SearchAlgorithm querying = new QueryingByExample();
         this.algorithms.put(querying.getIdentifier(), querying);
 
 //        // FakeSearch
@@ -60,7 +60,7 @@ public class SearchEngine {
         // Similarity Search (Behavior Profile based, indexed)
         this.addSearchAlgorithm(new BpSimilaritySearch());
 
-        this.addSearchAlgorithm(new MtreeSimilaritySearch());
+        //this.addSearchAlgorithm(new MtreeSimilaritySearch());
 
         // Initialize the algorithms: loading modules, building indexes, ...
         for (SearchAlgorithm algorithm : algorithms.values()) {

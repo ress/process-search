@@ -98,7 +98,7 @@ public class BpSimilaritySearch extends GEDSimilaritySearch {
         query.setId("Query-" + UUID.randomUUID().toString());
 
         // knn query ---------------------------------------------------------------------------
-        final Sphere queryPoint = new Sphere(query, 0.1f, null, -1, this.metric);
+        final Sphere queryPoint = new Sphere(query, 0.5f, null, -1, this.metric);
         // internal NN Query Cursor deals with a candidate objects
         Comparator distanceComparator = new Comparator () {
             public int compare (Object candidate1, Object candidate2) {
@@ -117,13 +117,13 @@ public class BpSimilaritySearch extends GEDSimilaritySearch {
         // Note: mtree.query(queue) method deals with object of Type candidate
         // MTree queries don't support the k-value for kNN queries right now
         Measurement.start("BPSimilaritySearch.knnSearch");
-        Iterator kNNresult = this.tree.query(queryPoint, 0);
-       // Iterator kNNresult = new Taker(this.tree.query(new DynamicHeap(distanceComparator)), k_value);
+        //Iterator kNNresult = this.tree.query(queryPoint, 0);
+        Iterator kNNresult = new Taker(this.tree.query(new DynamicHeap(distanceComparator)), k_value);
         Measurement.stop("BPSimilaritySearch.knnSearch");
 
         this.metric.resetCounter();
         while (kNNresult.hasNext()) {
-            /*  <-- Toggle the first / to switch between Sequential and MTree queries
+            //*  <-- Toggle the first / to switch between Sequential and MTree queries
             Sphere obj = (Sphere)((Tree.Query.Candidate)kNNresult.next()).descriptor();
             IDatapoint current = (IDatapoint) obj.center();
             System.out.println(obj.center() + "; distance to query point:  " + queryPoint.centerDistance(obj) );
