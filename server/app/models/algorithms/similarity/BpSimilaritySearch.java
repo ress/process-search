@@ -98,7 +98,7 @@ public class BpSimilaritySearch extends GEDSimilaritySearch {
         query.setId("Query-" + UUID.randomUUID().toString());
 
         // knn query ---------------------------------------------------------------------------
-        final Sphere queryPoint = new Sphere(query, 0.5f, null, -1, this.metric);
+        final Sphere queryPoint = new Sphere(query, 0.0f, null, -1, this.metric);
         // internal NN Query Cursor deals with a candidate objects
         Comparator distanceComparator = new Comparator () {
             public int compare (Object candidate1, Object candidate2) {
@@ -134,7 +134,7 @@ public class BpSimilaritySearch extends GEDSimilaritySearch {
             //}
             /*/
             RelSetDatapoint p = (RelSetDatapoint)kNNresult.next();
-            results.add(new SearchResult(p.getId(), p.getModel(), this.metric.distance(query, p)));
+            //results.add(new SearchResult(p.getId(), p.getModel(), this.metric.distance(query, p)));
             //*/
         }
 

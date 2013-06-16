@@ -40,7 +40,8 @@ function SearchCtrl($scope, $window, $http) {
         results: [],
         algorithms: [],
         algorithm: null,
-        parameters: null
+        parameters: null,
+        quality: {}
     };
 
     $http({ method: 'GET', url: '/search/algorithms'})
@@ -60,6 +61,61 @@ function SearchCtrl($scope, $window, $http) {
         }
     });
 
+    $scope.calculateConfidence = function () {
+        var minDistance = function(results) {
+            return results[0]['score'];
+        };
+
+        var medDistance = function(results) {
+            return results[Math.floor((results.length - 1) / 2)]['score'];
+        }
+
+        var maxDistance = function(results) {
+            return results[results.length - 1]['score'];
+        };
+
+        var confidenceFirst = function(results) {
+            return 1.0 - minDistance(results) / medDistance(results);
+        };
+
+        var confidenceMost = function(results) {
+            var k = Math.ceil(results.length / 2);
+            return medDistance(results.slice(0, k)) / medDistance(results.slice(k));
+        };
+
+        var discriminationMost = function(results) {
+            var interval = maxDistance(results) - minDistance(results);
+            if (interval <= 0) {
+                return 0;
+            }
+
+            return (medDistance(results) - minDistance(results)) / interval;
+        };
+
+        var discriminationAll = function(results) {
+            var interval = maxDistance(results) - minDistance(results);
+            if (interval <= 0) {
+                return 0;
+            }
+
+            var score = 0;
+            var avg = interval / (results.length - 1);
+
+            for (var i=1; i < results.length; i++) {
+                var s = Math.abs(Math.abs(results[i-1]['score'] -results[i]['score']) - avg);
+                score += s;
+            }
+
+            return 1 - score / (2*interval);
+        };
+
+
+        $scope.data.quality.confidenceFirst = confidenceFirst($scope.data.results);
+        $scope.data.quality.confidenceMost = confidenceMost($scope.data.results);
+        $scope.data.quality.discriminationMost = discriminationMost($scope.data.results);
+        $scope.data.quality.discriminationAll = discriminationAll($scope.data.results);
+    }
+
     $scope.search = function() {
         var model = $window.ORYXEditor.getSerializedJSON();
         var params = {
@@ -75,6 +131,8 @@ function SearchCtrl($scope, $window, $http) {
 
                 $scope.data.results = data.models;
                 $scope.data.time = data.time;
+
+                $scope.calculateConfidence();
 
                 setTimeout(function() {
                     window.scrollTo(0,jQuery(".searchbar-container").height() + 20);

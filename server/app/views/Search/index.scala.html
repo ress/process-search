@@ -24,15 +24,8 @@
 <body ng-controller="SearchCtrl">
 <div class="container-fluid searchbar-container">
     <div class="row-fluid">
-        <div id="oryx-canvas" class="span12 searchbar">
+        <div id="oryx-canvas" class="span10 searchbar">
         </div>
-    </div>
-    <div class="row-fluid">
-        <button ng-click="search()" class="btn btn-primary">Search</button>
-    </div>
-</div>
-<div id="results-container" class="container-fluid">
-    <div class="row-fluid">
         <div class="span2 preferences">
             <h5>Search Algorithm</h5>
             <div class="preference-set">
@@ -50,6 +43,29 @@
                 </ng-switch>
             </div>
 
+        </div>
+    </div>
+    <div class="row-fluid">
+        <button ng-click="search()" class="btn btn-primary">Search</button>
+    </div>
+</div>
+<div id="results-container" class="container-fluid">
+    <div class="row-fluid">
+        <div class="span2 preferences">
+            <h5>Confidence</h5>
+            <dl ng-show="data.results.length > 0">
+                <dt>Confidence First</dt>
+                <dd>{{data.quality.confidenceFirst | number:2}}</dd>
+                <dt>Confidence Most</dt>
+                <dd>{{data.quality.confidenceMost | number:2}}</dd>
+                <dt>Discrimination Most</dt>
+                <dd>{{data.quality.discriminationMost | number:2}}</dd>
+                <dt>Discrimination All</dt>
+                <dd>{{data.quality.discriminationAll | number:2}}</dd>
+            </dl>
+            <span ng-show="data.results.length == 0">
+                Run a query first.
+            </span>
         </div>
         <div class="span10">
             <h5>Results</h5>
