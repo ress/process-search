@@ -53,6 +53,15 @@ public class BusinessProcess {
                     processNodes.put(resourceId, new SequenceFlow(resourceId, targetShapes));
                     // Not represented with an explicit node in the jbpt model
                     break;
+                case "Exclusive_Databased_Gateway":
+                    targetShapes = new ArrayList<String>();
+                    for (JsonNode targetShape : shape.get("outgoing")) {
+                        targetShapes.add(targetShape.get("resourceId").getTextValue());
+                    }
+
+                    Logger.info("Found XorGateway resourceId='" + resourceId + "' targets=" + targetShapes.toString());
+                    processNodes.put(resourceId, new XorGateway(label));
+                    break;
                 case "ParallelGateway":
                     targetShapes = new ArrayList<String>();
                     for (JsonNode targetShape : shape.get("outgoing")) {
@@ -61,6 +70,7 @@ public class BusinessProcess {
 
                     Logger.info("Found ParallelGateway resourceId='" + resourceId + "' targets=" + targetShapes.toString());
                     processNodes.put(resourceId, new AndGateway(label));
+                    break;
                 default:
                     Logger.error("JSON Model parsing: Ignoring element with type " + type + "");
                     break;
@@ -101,6 +111,7 @@ public class BusinessProcess {
                         }
                     }
                     break;
+                case "Exclusive_Databased_Gateway":
                 case "ParallelGateway":
                     // Adds the control flow from a Parallel Gateway to the targets
                     source = (FlowNode) processNodes.get(sourceResourceId);
