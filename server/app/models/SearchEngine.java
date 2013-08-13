@@ -6,6 +6,7 @@ import models.algorithms.querying.QueryingByExample;
 import models.algorithms.similarity.BpSimilaritySearch;
 import models.algorithms.similarity.MtreeSimilaritySearch;
 import models.algorithms.similarity.SeqBpSimilaritySearch;
+import models.algorithms.simple.SimpleSearch;
 
 import java.util.HashMap;
 import java.util.List;
@@ -33,26 +34,11 @@ public class SearchEngine {
     protected SearchEngine() {
         this.algorithms = ArrayListMultimap.create();
         init();
-
-
     }
 
     private void init() {
         // Querying by Example
-       SearchAlgorithm querying = new QueryingByExample();
-        this.algorithms.put(querying.getIdentifier(), querying);
-
-//        // FakeSearch
-//        SearchAlgorithm fakeSearch = new FakeSearch();
-//        this.algorithms.put(fakeSearch.getIdentifier(), fakeSearch);
-//
-//        // Similarity Search
-//        SearchAlgorithm similaritySearch = new GEDSimilaritySearch();
-//        this.algorithms.put(similaritySearch.getIdentifier(), similaritySearch);
-//
-//        // Similarity Search
-//        SearchAlgorithm seqSimilaritySearch = new SeqGEDSimilaritySearch();
-//        this.algorithms.put(seqSimilaritySearch.getIdentifier(), seqSimilaritySearch);
+        this.addSearchAlgorithm(new QueryingByExample());
 
         // Similarity Search (Behavior Profile based, sequential search)
         this.addSearchAlgorithm(new SeqBpSimilaritySearch());
@@ -60,7 +46,8 @@ public class SearchEngine {
         // Similarity Search (Behavior Profile based, indexed)
         this.addSearchAlgorithm(new BpSimilaritySearch());
 
-        //this.addSearchAlgorithm(new MtreeSimilaritySearch());
+        // Simple Search
+        this.addSearchAlgorithm(new SimpleSearch());
 
         // Initialize the algorithms: loading modules, building indexes, ...
         for (SearchAlgorithm algorithm : algorithms.values()) {
@@ -84,12 +71,14 @@ public class SearchEngine {
             searchAlgorithm = new BpSimilaritySearch();
         } else if (algorithm.equals("Similarity Search (sequential)")) {
             searchAlgorithm = new SeqBpSimilaritySearch();
+        } else if (algorithm.equals("Simple Search")) {
+            searchAlgorithm = new SimpleSearch();
         } else {
             return null;
         }
 
         searchAlgorithm.initialize(parameters);
-        addSearchAlgorithm(searchAlgorithm);
+        this.addSearchAlgorithm(searchAlgorithm);
 
         return searchAlgorithm;
     }
