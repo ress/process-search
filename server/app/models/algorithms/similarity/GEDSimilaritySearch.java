@@ -18,6 +18,7 @@ import nl.tue.ieis.is.similarity.algos.GraphEditDistance;
 import nl.tue.ieis.is.similarity.algos.GraphEditDistanceGreedy;
 import nl.tue.ieis.is.similarity.graph.SimpleGraph;
 import play.Logger;
+import play.Play;
 import xxl.core.collections.containers.Container;
 import xxl.core.collections.containers.MapContainer;
 import xxl.core.collections.queues.DynamicHeap;
@@ -43,7 +44,6 @@ public class GEDSimilaritySearch implements SearchAlgorithm
     public MTree tree;
     public ExperimentMetric metric;
     private AbstractFunction<IDatapoint, Sphere> getDescriptor;
-    protected final String MODEL_PATH = "/Users/bart/Projekte/MA/EfficientSimilaritySearch/comin2011/tpn";
     protected static final float QUERY_RADIUS = 0.5f;
     protected static final int QUERY_K = 10;
     protected static final int QUERY_LOOKAHEAD = 10000;
@@ -85,9 +85,10 @@ public class GEDSimilaritySearch implements SearchAlgorithm
         this.initializeTree();
 
         try {
-            File dir = new File(MODEL_PATH);
+            String modelPath = Play.application().configuration().getString("search.modelpath");
+            File dir = new File(modelPath);
             if (!dir.exists() || !dir.isDirectory()) {
-                throw new IOException("Model path is not a valid directory: " + MODEL_PATH);
+                throw new IOException("Model path is not a valid directory: " + modelPath);
             }
             Logger.info("Starting to load process models");
             for (String filename : dir.list()) {

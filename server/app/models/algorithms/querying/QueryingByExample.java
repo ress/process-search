@@ -12,6 +12,7 @@ import org.jbpt.petri.NetSystem;
 import org.jbpt.petri.Node;
 import org.jbpt.petri.io.WoflanSerializer;
 import play.Logger;
+import play.Play;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,7 +24,6 @@ import java.util.Set;
  * Querying by Example implementation
  */
 public class QueryingByExample implements SearchAlgorithm {
-    private String MODEL_PATH = "/Users/bart/Projekte/MA/EfficientSimilaritySearch/comin2011/tpn";
     private RelationInvertedIndex index;
     protected Repository<MinimalKSuccessorRelation<NetSystem, Node>> repository;
 
@@ -49,9 +49,10 @@ public class QueryingByExample implements SearchAlgorithm {
         try {
             index = new RelationInvertedIndex();
 
-            File dir = new File(MODEL_PATH);
+            String modelPath = Play.application().configuration().getString("search.modelpath");
+            File dir = new File(modelPath);
             if (!dir.exists() || !dir.isDirectory()) {
-                throw new IOException("Model path is not a valid directory: " + MODEL_PATH);
+                throw new IOException("Model path is not a valid directory: " + modelPath);
             }
             Logger.info("Starting to load process models");
             for (String filename : dir.list()) {
