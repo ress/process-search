@@ -27,7 +27,7 @@ public class SimpleSearch implements SearchAlgorithm {
 
     @Override
     public String getIdentifier() {
-        return "SimpleSearch";
+        return "Simple Search";
     }
 
     @Override
@@ -67,17 +67,21 @@ public class SimpleSearch implements SearchAlgorithm {
 
         Set<Transition> query_transitions = processModel.getTransitions();
         for (NetSystem model : this.models) {
-            boolean match = false;
-
-            for (Transition t : model.getTransitions()) {
-                for (Transition query_transition : query_transitions) {
-                    if (t.getName().equals(query_transition.getName()))
-                        match = true;
-                }
-            }
+            boolean match = true;
+			
+			for (Transition query_transition : query_transitions) {
+				boolean found = false;
+				
+				for (Transition t : model.getTransitions()) {
+					if (t.getName().equals(query_transition.getName())) {
+						found = true;
+					}
+				}
+				match = match && found;
+			}
 
             if (match)
-                results.add(new SearchResult(model.getName(), processModel));
+                results.add(new SearchResult(model.getName(), processModel, 1));
         }
 
         return results;
