@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?><config>
+  <plugins>
+    <!-- <plugin source="toolbar.js" name="ORYX.Plugins.Toolbar" core="true" />		 -->
+    <plugin core="true" engaged="true" name="ORYX.Plugins.ShapeMenuPlugin" source="shapemenu.js"/>
+    <!-- <plugin source="canvasResize.js" name="ORYX.Plugins.CanvasResize" /> -->
+    <plugin name="ORYX.Plugins.RenameShapes" source="renameShapes.js"/>
+    <!-- <plugin source="waveGlobalUndo.js" name="ORYX.Plugins.WaveGlobalUndo" />	-->
+    <plugin name="ORYX.Plugins.ArrangementLight" source="arrangementLight.js"/>	
+    <!-- <plugin source="view.js" name="ORYX.Plugins.View">
+      <property zoomLevel="2" maxFitToScreenLevel="1.24" />
+    </plugin> -->
+    <plugin name="ORYX.Plugins.DragDropResize" source="dragdropresize.js"/>
+    <plugin name="ORYX.Plugins.HighlightingSelectedShapes" source="shapeHighlighting.js"/>
+    <plugin name="ORYX.Plugins.DragDocker" source="dragDocker.js"/>
+    <plugin name="ORYX.Plugins.AddDocker" source="addDocker.js"/>		
+    <plugin name="ORYX.Plugins.SelectionFrame" source="selectionframe.js"/>
+    <plugin name="ORYX.Plugins.ShapeHighlighting" source="shapeHighlighting.js"/>
+    <plugin name="ORYX.Plugins.Overlay" source="overlay.js"/>		
+    <plugin name="ORYX.Plugins.Edit" source="edit.js"/>
+    <plugin name="ORYX.Plugins.KeysMove" source="keysMove.js"/>	
+    <plugin name="ORYX.Plugins.Schlaumeier" source="schlaumeier.js"/>	
+    <plugin name="ORYX.Plugins.BPMN2_0" source="bpmn2.0.js">
+      <requires namespace="http://b3mn.org/stencilset/bpmn2.0#"/>
+      <requires namespace="http://b3mn.org/stencilset/simpleBPMN2.0#"/>
+    </plugin>
+    <!-- <plugin source="uml.js" name="ORYX.Plugins.UML">
+      <requires namespace="http://b3mn.org/stencilset/UML2.2Class#"/>	
+    </plugin> -->	
+    <!-- <plugin source="wave.js" name="ORYX.Plugins.Wave" /> -->
+    <!-- <plugin source="farbrausch.js" name="ORYX.Plugins.Farbrausch" /> -->
+    <!-- <plugin source="syncro.js" name="ORYX.Plugins.Syncro" /> -->
+    <!-- <plugin source="syncroOryx.js" name="ORYX.Plugins.SyncroOryx" /> -->
+    <!-- <plugin source="farbrausch_shadow.js" name="ORYX.Plugins.FarbrauschShadow" /> -->
+    <!-- <plugin source="farbrausch_afterglow.js" name="ORYX.Plugins.FarbrauschAfterglow" /> -->
+    <!-- <plugin source="farbrausch_legend.js" name="ORYX.Plugins.FarbrauschLegend" /> -->
+    <!-- <plugin source="shapeTooltip.js" name="ORYX.Plugins.ShapeTooltip" /> -->
+    <!-- <plugin source="paint.js" name="ORYX.Plugins.Paint" /> -->
+    <!-- <plugin source="sideTabs.js" name="ORYX.Plugins.SideTabs"/> -->
+    <!-- <plugin source="propertytab.js" name="ORYX.Plugins.PropertyTab"/> -->
+    <!-- <plugin source="changelog.js" name="ORYX.Plugins.Changelog"/> -->
+    <plugin name="ORYX.Plugins.NewShapeRepository" source="newshaperepository.js"/>
+    <plugin name="ORYX.Plugins.DockerCreation" source="dockerCreation.js"/>
+    <plugin name="ORYX.Plugins.JSONExport" source="json_export.js"/> 
+    <plugin name="ORYX.Plugins.ExternalInterface" source="external_interface.js"/>     
+    <properties>
+      <property group="File" index="1"/>
+      <property group="Edit" index="2"/>	
+      <property group="Undo" index="3"/>
+    </properties>
+  </plugins>
+</config>
