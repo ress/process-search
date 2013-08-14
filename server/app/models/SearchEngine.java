@@ -21,6 +21,7 @@ import java.util.Set;
  */
 public class SearchEngine {
     public ArrayListMultimap<String, SearchAlgorithm> algorithms;
+	public HashMap<String, Class<? extends SearchAlgorithm>> algorithmClasses = new HashMap<>();
     protected static SearchEngine instance;
 
     public static SearchEngine getInstance() {
@@ -28,12 +29,12 @@ public class SearchEngine {
             instance = new SearchEngine();
         }
 
-        return instance;
+		return instance;
     }
 
     protected SearchEngine() {
         this.algorithms = ArrayListMultimap.create();
-        init();
+		init();
     }
 
     private void init() {
@@ -47,7 +48,7 @@ public class SearchEngine {
         this.addSearchAlgorithm(new BpSimilaritySearch());
 
         // Simple Search
-        this.addSearchAlgorithm(new SimpleSearch());
+		this.addSearchAlgorithm(new SimpleSearch());
 
         // Initialize the algorithms: loading modules, building indexes, ...
         for (SearchAlgorithm algorithm : algorithms.values()) {
@@ -56,6 +57,10 @@ public class SearchEngine {
     }
 
     private void addSearchAlgorithm(SearchAlgorithm algorithm) {
+		if (!this.algorithmClasses.containsKey(algorithm.getIdentifier())) {
+			this.algorithmClasses.put(algorithm.getIdentifier(), algorithm.getClass());
+		}
+			
         this.algorithms.put(algorithm.getIdentifier(), algorithm);
     }
 
@@ -64,18 +69,18 @@ public class SearchEngine {
     }
 
     public SearchAlgorithm buildSearchAlgorithm(String algorithm, HashMap<String, Object> parameters) {
-        SearchAlgorithm searchAlgorithm;
-        if (algorithm.equals("Querying by Example")) {
-            searchAlgorithm = new QueryingByExample();
-        } else if (algorithm.equals("Similarity Search")) {
-            searchAlgorithm = new BpSimilaritySearch();
-        } else if (algorithm.equals("Similarity Search (sequential)")) {
-            searchAlgorithm = new SeqBpSimilaritySearch();
-        } else if (algorithm.equals("Simple Search")) {
-            searchAlgorithm = new SimpleSearch();
-        } else {
-            return null;
-        }
+		
+		Class<? extends SearchAlgorithm> algorithmClass = this.algorithmClasses.get(algorithm);
+		SearchAlgorithm searchAlgorithm;
+		if (null == algorithmClass) {
+			return null;
+		}
+		try {
+        	searchAlgorithm = algorithmClass.newInstance();
+		}
+		catch (Exception e) {
+			return null;
+		}
 
         searchAlgorithm.initialize(parameters);
         this.addSearchAlgorithm(searchAlgorithm);
