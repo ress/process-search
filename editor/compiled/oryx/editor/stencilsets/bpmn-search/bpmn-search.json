@@ -275,100 +275,10 @@
                 "fromtoall",
                 "GatewaysMorph"
             ]
-        },
-        {
-            "type": "node",
-            "id": "StartNoneEvent",
-            "title": "Start Event",
-            "title_de": "Start-Ereignis",
-            "groups": [
-                "Start Events"
-            ],
-            "groups_de": [
-                "Start-Ereignisse"
-            ],
-            "description": "Untyped start event.",
-            "description_de": "Ein nicht weiter typisiertes Start-Ereignis.",
-            "view":"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?> <svg    xmlns=\"http://www.w3.org/2000/svg\"    xmlns:oryx=\"http://www.b3mn.org/oryx\"    width=\"40\"    height=\"40\"    version=\"1.0\">   <defs></defs>   <oryx:magnets>    <oryx:magnet oryx:cx=\"16\" oryx:cy=\"16\" oryx:default=\"yes\" />   </oryx:magnets>   <g pointer-events=\"fill\">        <defs>   <radialGradient id=\"background\" cx=\"10%\" cy=\"10%\" r=\"100%\" fx=\"10%\" fy=\"10%\">    <stop offset=\"0%\" stop-color=\"#ffffff\" stop-opacity=\"1\"/>    <stop id=\"fill_el\" offset=\"100%\" stop-color=\"#ffffff\" stop-opacity=\"1\"/>   </radialGradient>  </defs>       <circle class=\"highlight\" id=\"bg_frame\" cx=\"16\" cy=\"16\" r=\"15\" stroke=\"#000000\" fill=\"url(#background) #ffffff\" stroke-width=\"1\"/>  <text font-size=\"11\"    id=\"text_name\"    x=\"16\" y=\"33\"    oryx:align=\"top center\"    stroke=\"#000000\"  ></text>   </g> </svg> ",
-            "icon": "startevent/none.png",
-            "propertyPackages": [
-                "baseAttributes"
-            ],
-            "roles": [
-                "all",
-                "Startevents_all",
-                "sequence_start",
-                "choreography_sequence_start",
-                "to_task_event",
-                "from_task_event",
-                "fromtoall",
-                "StartEventsMorph"
-            ]
-        },
-        {
-            "type": "node",
-            "id": "EndNoneEvent",
-            "title": "End Event",
-            "title_de": "End-Ereignis",
-            "groups": [
-                "End Events"
-            ],
-            "groups_de": [
-                "End-Ereignisse"
-            ],
-            "description": "The untyped end event typically marks the standard end of a process.",
-            "description_de": "Untypisiertes End-Ereignis, welches ein normales Ende eines Prozesses markiert.",
-            "view":"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?> <svg    xmlns=\"http://www.w3.org/2000/svg\"    xmlns:oryx=\"http://www.b3mn.org/oryx\"    width=\"40\"    height=\"40\"    version=\"1.0\">   <defs></defs>   <oryx:magnets>    <oryx:magnet oryx:cx=\"16\" oryx:cy=\"16\" oryx:default=\"yes\" />   </oryx:magnets>   <g pointer-events=\"fill\">      <defs>   <radialGradient id=\"background\" cx=\"10%\" cy=\"10%\" r=\"100%\" fx=\"10%\" fy=\"10%\">    <stop offset=\"0%\" stop-color=\"#ffffff\" stop-opacity=\"1\"/>    <stop id=\"fill_el\" offset=\"100%\" stop-color=\"#ffffff\" stop-opacity=\"1\"/>   </radialGradient>  </defs>       <circle class=\"highlight\" id=\"bg_frame\" cx=\"16\" cy=\"16\" r=\"14\" stroke=\"#000000\" fill=\"url(#background) #ffffff\" stroke-width=\"3\"/>  <text font-size=\"11\"    id=\"text_name\"    x=\"16\" y=\"32\"    oryx:align=\"top center\"    stroke=\"#000000\"  ></text>   </g> </svg> ",
-            "icon": "endevent/none.png",
-            "propertyPackages": [
-                "baseAttributes"
-            ],
-            "roles": [
-                "all",
-                "sequence_end",
-                "to_task_event",
-                "from_task_event",
-                "fromtoall",
-                "choreography_sequence_end",
-                "Endevents_all",
-                "EndEventsMorph"
-            ],
-            "properties": [
-                {
-                    "id": "trigger",
-                    "type": "String",
-                    "title": "Trigger",
-                    "title_de": "Auslöser",
-                    "value": "None",
-                    "description": "",
-                    "readonly": true,
-                    "optional": false
-                }
-            ]
         }
     ],
     "rules": {
         "cardinalityRules": [
-            {
-                "role": "Startevents_all",
-                "maximumOccurrence": null,
-                "incomingEdges": [
-                    {
-                        "role": "SequenceFlow",
-                        "maximum": 0
-                    }
-                ]
-            },
-            {
-                "role": "Endevents_all",
-                "maximumOccurrence": null,
-                "outgoingEdges": [
-                    {
-                        "role": "SequenceFlow",
-                        "maximum": 0
-                    }
-                ]
-            }
         ],
         "connectionRules": [
             {
@@ -604,19 +514,6 @@
                     "ParallelGateway"
                 ]
             },
-            {
-                "role": "StartEventsMorph",
-                "baseMorphs": [
-                    "StartNoneEvent"
-                ],
-                "showInShapeMenu": false
-            },
-            {
-                "role": "EndEventsMorph",
-                "baseMorphs": [
-                    "EndNoneEvent"
-                ]
-            }
         ],
         "layoutRules": [
             {

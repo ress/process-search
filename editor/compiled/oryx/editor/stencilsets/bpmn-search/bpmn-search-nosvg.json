@@ -275,100 +275,10 @@
                 "fromtoall",
                 "GatewaysMorph"
             ]
-        },
-        {
-            "type": "node",
-            "id": "StartNoneEvent",
-            "title": "Start Event",
-            "title_de": "Start-Ereignis",
-            "groups": [
-                "Start Events"
-            ],
-            "groups_de": [
-                "Start-Ereignisse"
-            ],
-            "description": "Untyped start event.",
-            "description_de": "Ein nicht weiter typisiertes Start-Ereignis.",
-            "view": "startevent/none.svg",
-            "icon": "startevent/none.png",
-            "propertyPackages": [
-                "baseAttributes"
-            ],
-            "roles": [
-                "all",
-                "Startevents_all",
-                "sequence_start",
-                "choreography_sequence_start",
-                "to_task_event",
-                "from_task_event",
-                "fromtoall",
-                "StartEventsMorph"
-            ]
-        },
-        {
-            "type": "node",
-            "id": "EndNoneEvent",
-            "title": "End Event",
-            "title_de": "End-Ereignis",
-            "groups": [
-                "End Events"
-            ],
-            "groups_de": [
-                "End-Ereignisse"
-            ],
-            "description": "The untyped end event typically marks the standard end of a process.",
-            "description_de": "Untypisiertes End-Ereignis, welches ein normales Ende eines Prozesses markiert.",
-            "view": "endevent/none.svg",
-            "icon": "endevent/none.png",
-            "propertyPackages": [
-                "baseAttributes"
-            ],
-            "roles": [
-                "all",
-                "sequence_end",
-                "to_task_event",
-                "from_task_event",
-                "fromtoall",
-                "choreography_sequence_end",
-                "Endevents_all",
-                "EndEventsMorph"
-            ],
-            "properties": [
-                {
-                    "id": "trigger",
-                    "type": "String",
-                    "title": "Trigger",
-                    "title_de": "Auslöser",
-                    "value": "None",
-                    "description": "",
-                    "readonly": true,
-                    "optional": false
-                }
-            ]
         }
     ],
     "rules": {
         "cardinalityRules": [
-            {
-                "role": "Startevents_all",
-                "maximumOccurrence": null,
-                "incomingEdges": [
-                    {
-                        "role": "SequenceFlow",
-                        "maximum": 0
-                    }
-                ]
-            },
-            {
-                "role": "Endevents_all",
-                "maximumOccurrence": null,
-                "outgoingEdges": [
-                    {
-                        "role": "SequenceFlow",
-                        "maximum": 0
-                    }
-                ]
-            }
         ],
         "connectionRules": [
             {
@@ -604,19 +514,6 @@
                     "ParallelGateway"
                 ]
             },
-            {
-                "role": "StartEventsMorph",
-                "baseMorphs": [
-                    "StartNoneEvent"
-                ],
-                "showInShapeMenu": false
-            },
-            {
-                "role": "EndEventsMorph",
-                "baseMorphs": [
-                    "EndNoneEvent"
-                ]
-            }
         ],
         "layoutRules": [
             {
