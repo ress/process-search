@@ -79,6 +79,10 @@ function SearchCtrl($scope, $window, $http) {
         };
 
         var confidenceMost = function(results) {
+            if (results.length < 2) {
+                return 1;
+            }
+
             var k = Math.ceil(results.length / 2);
             return medDistance(results.slice(0, k)) / medDistance(results.slice(k));
         };
