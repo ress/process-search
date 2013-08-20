@@ -62,10 +62,10 @@ public class SimpleSearch implements SearchAlgorithm {
     }
 
     @Override
-    public ArrayList<SearchResult> search(NetSystem processModel) {
+    public ArrayList<SearchResult> search(NetSystem queryModel) {
         ArrayList<SearchResult> results = new ArrayList<>();
 
-        Set<Transition> query_transitions = processModel.getTransitions();
+        Set<Transition> query_transitions = queryModel.getTransitions();
         for (NetSystem model : this.models) {
             boolean match = true;
 			
@@ -81,7 +81,7 @@ public class SimpleSearch implements SearchAlgorithm {
 			}
 
             if (match)
-                results.add(new SearchResult(model.getName(), processModel, 1));
+                results.add(new SearchResult(model.getName(), model, 1));
         }
 
         return results;

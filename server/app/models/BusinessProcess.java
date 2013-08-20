@@ -87,26 +87,30 @@ public class BusinessProcess {
                 case "Task":
                     source = (FlowNode) processNodes.get(sourceResourceId);
 
-                    for (JsonNode targetShape : shape.get("outgoing")) {
-                        String targetId = targetShape.get("resourceId").getTextValue();
-                        if (processNodes.containsKey(targetId)) {
-                            Object target = processNodes.get(targetId);
+                    if (shape.get("outgoing").size() == 0) {
+                        processModel.addFlowNode(source);
+                    } else {
+                        for (JsonNode targetShape : shape.get("outgoing")) {
+                            String targetId = targetShape.get("resourceId").getTextValue();
+                            if (processNodes.containsKey(targetId)) {
+                                Object target = processNodes.get(targetId);
 
-                            // Currently only control flows using a SequenceFlow are supported
-                            if (target.getClass() == SequenceFlow.class) {
-                                for (String actualTargetId : ((SequenceFlow) target).outgoing) {
-                                    if (processNodes.containsKey(actualTargetId)) {
-                                        FlowNode actualTargetNode = (FlowNode) processNodes.get(actualTargetId);
-                                        Logger.error("Adding control flow from source='" + source.getDescription() + "' to target='" + actualTargetNode.getDescription() + "'");
-                                        processModel.addControlFlow(source, actualTargetNode);
+                                // Currently only control flows using a SequenceFlow are supported
+                                if (target.getClass() == SequenceFlow.class) {
+                                    for (String actualTargetId : ((SequenceFlow) target).outgoing) {
+                                        if (processNodes.containsKey(actualTargetId)) {
+                                            FlowNode actualTargetNode = (FlowNode) processNodes.get(actualTargetId);
+                                            Logger.error("Adding control flow from source='" + source.getDescription() + "' to target='" + actualTargetNode.getDescription() + "'");
+                                            processModel.addControlFlow(source, actualTargetNode);
 
+                                        }
                                     }
                                 }
-                            }
 
-                            // Adds the control flow from tasks to gateways
-                            if (target.getClass() == AndGateway.class || target.getClass() == XorGateway.class) {
-                                processModel.addControlFlow(source, (FlowNode)target);
+                                // Adds the control flow from tasks to gateways
+                                if (target.getClass() == AndGateway.class || target.getClass() == XorGateway.class) {
+                                    processModel.addControlFlow(source, (FlowNode)target);
+                                }
                             }
                         }
                     }
