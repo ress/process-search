@@ -63,15 +63,15 @@ function SearchCtrl($scope, $window, $http) {
 
     $scope.calculateConfidence = function () {
         var minDistance = function(results) {
-            return results[0]['score'];
+            return 1 - results[0]['score'];
         };
 
         var medDistance = function(results) {
-            return results[Math.floor((results.length - 1) / 2)]['score'];
+            return 1 - results[Math.floor((results.length - 1) / 2)]['score'];
         }
 
         var maxDistance = function(results) {
-            return results[results.length - 1]['score'];
+            return 1 - results[results.length - 1]['score'];
         };
 
         var confidenceFirst = function(results) {

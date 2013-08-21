@@ -16,6 +16,10 @@ import xxl.core.cursors.filters.Taker;
 import xxl.core.indexStructures.Sphere;
 import xxl.core.indexStructures.Tree;
 
+
+import java.util.Collections;
+import java.util.Comparator;
+
 import java.io.File;
 import java.util.*;
 
@@ -29,6 +33,12 @@ import java.util.*;
 public class BpSimilaritySearch extends GEDSimilaritySearch {
     protected Repository<RelSet<NetSystem, Node>> repository;
     protected HashMap<String, Object> parameters;
+	protected final static Comparator<SearchResult> Comp = new Comparator<SearchResult>() {
+		@Override
+		public int compare(SearchResult o1, SearchResult o2) {
+			return Double.compare(o2.getScore(), o1.getScore());
+		}
+	};
 
     @Override
     public void initialize() {
@@ -130,7 +140,7 @@ public class BpSimilaritySearch extends GEDSimilaritySearch {
 
             // Skip obviously bad results
             //if (queryPoint.centerDistance(obj) < 1) {
-                results.add(new SearchResult(((RelSetDatapoint)obj.center()).getId(), current.getModel(), queryPoint.centerDistance(obj)));
+                results.add(new SearchResult(((RelSetDatapoint)obj.center()).getId(), current.getModel(), 1 - queryPoint.centerDistance(obj)));
             //}
             /*/
             RelSetDatapoint p = (RelSetDatapoint)kNNresult.next();
@@ -140,6 +150,8 @@ public class BpSimilaritySearch extends GEDSimilaritySearch {
 
         Measurement.step("BPSimilaritySearch.MetricComparisons", this.metric.getNumberOfComparisons());
         this.metric.resetCounter();
+
+		Collections.sort(results, Comp);
 
         return results;
     }

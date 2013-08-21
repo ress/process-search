@@ -14,6 +14,9 @@ import org.jbpt.petri.io.WoflanSerializer;
 import play.Logger;
 import play.Play;
 
+import java.util.Collections;
+import java.util.Comparator;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -26,6 +29,12 @@ import java.util.Set;
 public class QueryingByExample implements SearchAlgorithm {
     private RelationInvertedIndex index;
     protected Repository<MinimalKSuccessorRelation<NetSystem, Node>> repository;
+	protected final static Comparator<SearchResult> Comp = new Comparator<SearchResult>() {
+		@Override
+		public int compare(SearchResult o1, SearchResult o2) {
+			return Double.compare(o2.getScore(), o1.getScore());
+		}
+	};
 
     @Override
     public String getIdentifier() {
@@ -104,6 +113,8 @@ public class QueryingByExample implements SearchAlgorithm {
                 results.add(new SearchResult(model.getFile(), model.getNet(), closeness));
             }
             Measurement.stop("QueryingByExample.search");
+			
+			Collections.sort(results, Comp);
 
             return results;
         } catch (IOException e) {
