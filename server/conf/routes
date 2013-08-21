@@ -3,27 +3,29 @@
 # ~~~~
 
 # Home page
-GET     /                           controllers.Search.index()
+GET            /                            controllers.Search.index()
 
 # Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file               controllers.Assets.at(path="/public", file)
-GET     /editor/*file               controllers.ExternalAssets.at(path="../editor", file)
-GET     /compiled/*file               controllers.ExternalAssets.at(path="../compiled", file)
+GET            /assets/*file                controllers.Assets.at(path="/public", file)
+GET            /editor/*file                controllers.ExternalAssets.at(path="../editor", file)
+GET            /compiled/*file              controllers.ExternalAssets.at(path="../compiled", file)
+
+GET            /evaluation/*file            controllers.ExternalAssets.at(path="../measurements", file)
 
 # Submitting search query
-POST    /search                     controllers.Search.search()
-OPTIONS /search                     controllers.Model.checkPreFlight()
+POST           /search                      controllers.Search.search()
+OPTIONS        /search                      controllers.Model.checkPreFlight()
 
-GET     /search/algorithms          controllers.Search.algorithms()
-OPTIONS /search/algorithms          controllers.Model.checkPreFlight()
-POST    /measurements/clear         controllers.Search.clearMeasurements()
-POST    /measurements/persist         controllers.Search.persistMeasurements()
+GET            /search/algorithms           controllers.Search.algorithms()
+OPTIONS        /search/algorithms           controllers.Model.checkPreFlight()
+POST           /measurements/clear          controllers.Search.clearMeasurements()
+POST           /measurements/persist        controllers.Search.persistMeasurements()
 
-GET /models/list controllers.Model.list()
-OPTIONS /models/list controllers.Model.checkPreFlight()
+GET            /models/list                 controllers.Model.list()
+OPTIONS        /models/list                 controllers.Model.checkPreFlight()
 
-POST /models/load controllers.Model.load()
-OPTIONS /models/load controllers.Model.checkPreFlight()
+POST           /models/load                 controllers.Model.load()
+OPTIONS        /models/load                 controllers.Model.checkPreFlight()
 
-GET /models/selected controllers.Model.selected()
-OPTIONS /models/selected controllers.Model.checkPreFlight()
+GET            /models/selected             controllers.Model.selected()
+OPTIONS        /models/selected             controllers.Model.checkPreFlight()

@@ -75,7 +75,7 @@
         if (typeof parameters !== "undefined") {
           _parameters = parameters;
         } else {
-          _parameters = {'k-value': '10'};
+          _parameters = {'k-value': '10', 'measurement_query': '1'};
         }
         var data = {
           'tpn': $scope.data.searchModel.model,
@@ -292,7 +292,7 @@
             $scope.data.searchModel = searchModel;
 
             _.defer(function() {
-              $scope.search({'k-value': '' + $scope.data.availableModels.length}).then(
+              $scope.search({'k-value': '' + $scope.data.availableModels.length, 'measurement_query': '0'}).then(
               function(result) {
                 var precisionAt = calculatePrecisionRecall(searchModel.name, result.data.models);
                 console.log(searchModel, ": Experiment done");
@@ -373,10 +373,10 @@
           var overall = recall * (2 - 1 / precision);
 
           return {
-            precision: precision,
-            recall: recall,
-            fscore: fscore,
-            overall: overall
+            precision: precision || 0,
+            recall: recall || 0,
+            fscore: fscore || 0,
+            overall: overall || 0
           };
         };
 
@@ -399,7 +399,7 @@
             $scope.loadModels().then(function() {
               $scope.data.searchModel = $scope.data.qualityExperiment.queries[query_index];
               $scope.data.qualityExperiment.currentStage = "Searching for query " + $scope.data.qualityExperiment.queries[query_index].name;
-              $scope.search().then(function(result) {
+              $scope.search({'k-value': '50', 'measurement_query': '0'}).then(function(result) {
                 var evaluation = effectiveness($scope.data.qualityExperiment.queries[query_index].name, result.data.models);
                 evaluation.search = $scope.data.qualityExperiment.queries[query_index].name;
 

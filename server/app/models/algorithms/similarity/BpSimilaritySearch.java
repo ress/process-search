@@ -36,7 +36,7 @@ public class BpSimilaritySearch extends GEDSimilaritySearch {
 	protected final static Comparator<SearchResult> Comp = new Comparator<SearchResult>() {
 		@Override
 		public int compare(SearchResult o1, SearchResult o2) {
-			return Double.compare(o2.getScore(), o1.getScore());
+			return Double.compare(o2.score, o1.score);
 		}
 	};
 
@@ -68,6 +68,11 @@ public class BpSimilaritySearch extends GEDSimilaritySearch {
         k_value.put("type", "number");
         k_value.put("default", "50");
 
+        HashMap<String, Object> measurement_query = new HashMap<>();
+        measurement_query.put("name", "measurement_query");
+        measurement_query.put("type", "number_hidden");
+        measurement_query.put("default", "0");
+
         parameters.add(k_value);
 
         return parameters;
@@ -80,6 +85,7 @@ public class BpSimilaritySearch extends GEDSimilaritySearch {
     public HashMap<String, Object> getDefaultParameters() {
         HashMap<String, Object> parameters = new HashMap<>();
         parameters.put("k-value", "50");
+        parameters.put("measurement_query", "0");
         return parameters;
     }
 
@@ -103,6 +109,11 @@ public class BpSimilaritySearch extends GEDSimilaritySearch {
     public ArrayList<SearchResult> search(NetSystem processModel) {
         ArrayList<SearchResult> results = new ArrayList<>();
         Integer k_value = Integer.valueOf((String)this.parameters.get("k-value"));
+        Integer measurement_query = 0;
+        Object _measurement_query = this.parameters.get("measurement_query");
+        if (_measurement_query != null) {
+            measurement_query = Integer.valueOf((String)_measurement_query);
+        }
 
         IDatapoint query = new RelSetDatapoint(RelSetCreatorUnfolding.getInstance().deriveRelationSet(processModel));
         query.setId("Query-" + UUID.randomUUID().toString());
@@ -127,8 +138,13 @@ public class BpSimilaritySearch extends GEDSimilaritySearch {
         // Note: mtree.query(queue) method deals with object of Type candidate
         // MTree queries don't support the k-value for kNN queries right now
         Measurement.start("BPSimilaritySearch.knnSearch");
-        //Iterator kNNresult = this.tree.query(queryPoint, 0);
-        Iterator kNNresult = new Taker(this.tree.query(new DynamicHeap(distanceComparator)), k_value);
+
+        Iterator kNNresult;
+        if (measurement_query == 1) {
+            kNNresult = this.tree.query(queryPoint, 0);
+        } else {
+            kNNresult = new Taker(this.tree.query(new DynamicHeap(distanceComparator)), k_value);
+        }
         Measurement.stop("BPSimilaritySearch.knnSearch");
 
         this.metric.resetCounter();
@@ -136,7 +152,7 @@ public class BpSimilaritySearch extends GEDSimilaritySearch {
             //*  <-- Toggle the first / to switch between Sequential and MTree queries
             Sphere obj = (Sphere)((Tree.Query.Candidate)kNNresult.next()).descriptor();
             IDatapoint current = (IDatapoint) obj.center();
-            System.out.println(obj.center() + "; distance to query point:  " + queryPoint.centerDistance(obj) );
+            //System.out.println(obj.center() + "; distance to query point:  " + queryPoint.centerDistance(obj) );
 
             // Skip obviously bad results
             if (queryPoint.centerDistance(obj) < 1) {

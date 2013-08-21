@@ -12,6 +12,8 @@
 
     <script src="/assets/javascripts/angular.js"></script>
     <script src="/assets/javascripts/underscore.js"></script>
+    <script src="/assets/javascripts/ngProgress.js"></script>
+
 
     <!-- D3 and dagre -->
     <script type="text/javascript" src="/assets/javascripts/d3.js"></script>
@@ -35,8 +37,8 @@
             </div>
 
             <div class="preference-set" ng-repeat="parameter in data.parameters">
-                <h5>{{parameter.name}}</h5>
                 <ng-switch on="parameter.type">
+                    <h5>{{parameter.name}}</h5>
                     <div ng-switch-when="number">
                         <input class="input-small" ng-model="parameter.value" value="{{parameter.default}}">
                     </div>

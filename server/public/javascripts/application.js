@@ -32,9 +32,17 @@ function _getStencilSetName() {
     return stencilSetName;
 }
 
-angular.module('searchModule', []);
+var app = angular.module('searchModule', ['ngProgress']);
 
-function SearchCtrl($scope, $window, $http) {
+app.config(function(progressbarProvider){
+    // Default color is firebrick
+    progressbarProvider.setColor('green');
+    // Default height is 2px
+    progressbarProvider.setHeight('2px');
+});
+
+
+function SearchCtrl($scope, $window, $http, progressbar) {
     $scope.data = {
         time: 0,
         results: [],
@@ -46,7 +54,7 @@ function SearchCtrl($scope, $window, $http) {
 
     $http({ method: 'GET', url: '/search/algorithms'})
         .success(function(data) {
-            $scope.data.algorithms = data['algorithms'];
+            $scope.data.algorithms = _.filter(data['algorithms'], function(algorithm) { return algorithm.name != "Similarity Search (sequential)"});
             $scope.data.algorithm = $scope.data.algorithms[0].name;
         });
 
@@ -121,34 +129,41 @@ function SearchCtrl($scope, $window, $http) {
     }
 
     $scope.search = function() {
-        var model = $window.ORYXEditor.getSerializedJSON();
-        var params = {
-            algorithm: $scope.data.algorithm,
-            json: model,
-            parameters: _.object(_.map($scope.data.parameters, function(parameter) { return [parameter.name, parameter.value]; }))
-        };
+        progressbar.start();
+        progressbar.set(20);
 
-        localStorage.setItem("lastModel", model);
+        setTimeout(function() {
+            var model = $window.ORYXEditor.getSerializedJSON();
+            var params = {
+                algorithm: $scope.data.algorithm,
+                json: model,
+                parameters: _.object(_.map($scope.data.parameters, function(parameter) { return [parameter.name, parameter.value]; }))
+            };
 
-        $http({ method: 'POST', url: '/search', data: params})
-            .success(function(data) {
+            localStorage.setItem("lastModel", model);
 
-                $scope.data.results = data.models;
-                $scope.data.time = data.time;
+            $http({ method: 'POST', url: '/search', data: params})
+                .success(function(data) {
 
-                $scope.calculateConfidence();
+                    $scope.data.results = data.models;
+                    $scope.data.time = data.time;
 
-                setTimeout(function() {
-                    window.scrollTo(0,jQuery(".searchbar-container").height() + 20);
+                    $scope.calculateConfidence();
 
                     setTimeout(function() {
-                        for (var i = 0; i < data.models.length; i++) {
-                            new PetriNetGraph(data.models[i].dot, "#graph-" + i);
-                        }
+                        window.scrollTo(0,jQuery(".searchbar-container").height() + 20);
+
+                        setTimeout(function() {
+                            for (var i = 0; i < data.models.length; i++) {
+                                new PetriNetGraph(data.models[i].dot, "#graph-" + i);
+                            }
+
+                            progressbar.complete();
+                        }, 1);
                     }, 1);
-                }, 1);
-            });
-    };
+                });
+        }, 0);
+    }
 }
 
-SearchCtrl.$inject = ['$scope', '$window', '$http'];
+SearchCtrl.$inject = ['$scope', '$window', '$http', 'progressbar'];

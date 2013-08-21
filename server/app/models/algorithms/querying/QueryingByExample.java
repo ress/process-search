@@ -32,7 +32,7 @@ public class QueryingByExample implements SearchAlgorithm {
 	protected final static Comparator<SearchResult> Comp = new Comparator<SearchResult>() {
 		@Override
 		public int compare(SearchResult o1, SearchResult o2) {
-			return Double.compare(o2.getScore(), o1.getScore());
+			return Double.compare(o2.score, o1.score);
 		}
 	};
 

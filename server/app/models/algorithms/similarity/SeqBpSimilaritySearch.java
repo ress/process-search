@@ -48,6 +48,7 @@ public class SeqBpSimilaritySearch extends BpSimilaritySearch {
         Measurement.step("SeqBPSimilaritySearch.MetricComparisons", this.metric.getNumberOfComparisons());
         this.metric.resetCounter();
 
+        Collections.sort(results, Comp);
 
         return results;
     }
