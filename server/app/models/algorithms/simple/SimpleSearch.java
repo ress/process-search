@@ -15,13 +15,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 
-/**
- * Created with IntelliJ IDEA.
- * User: bart
- * Date: 13.08.13
- * Time: 20:46
- * To change this template use File | Settings | File Templates.
- */
+
 public class SimpleSearch implements SearchAlgorithm {
     protected ArrayList<NetSystem> models = new ArrayList<>();
 

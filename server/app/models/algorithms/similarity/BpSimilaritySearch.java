@@ -66,7 +66,7 @@ public class BpSimilaritySearch extends GEDSimilaritySearch {
         HashMap<String, Object> k_value = new HashMap<>();
         k_value.put("name", "k-value");
         k_value.put("type", "number");
-        k_value.put("default", "10");
+        k_value.put("default", "50");
 
         parameters.add(k_value);
 
@@ -79,7 +79,7 @@ public class BpSimilaritySearch extends GEDSimilaritySearch {
 
     public HashMap<String, Object> getDefaultParameters() {
         HashMap<String, Object> parameters = new HashMap<>();
-        parameters.put("k-value", "10");
+        parameters.put("k-value", "50");
         return parameters;
     }
 
@@ -139,9 +139,9 @@ public class BpSimilaritySearch extends GEDSimilaritySearch {
             System.out.println(obj.center() + "; distance to query point:  " + queryPoint.centerDistance(obj) );
 
             // Skip obviously bad results
-            //if (queryPoint.centerDistance(obj) < 1) {
+            if (queryPoint.centerDistance(obj) < 1) {
                 results.add(new SearchResult(((RelSetDatapoint)obj.center()).getId(), current.getModel(), 1 - queryPoint.centerDistance(obj)));
-            //}
+            }
             /*/
             RelSetDatapoint p = (RelSetDatapoint)kNNresult.next();
             //results.add(new SearchResult(p.getId(), p.getModel(), this.metric.distance(query, p)));
