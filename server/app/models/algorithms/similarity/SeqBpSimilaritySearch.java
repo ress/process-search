@@ -38,6 +38,11 @@ public class SeqBpSimilaritySearch extends BpSimilaritySearch {
             i++;
             ResultData d = res.next();
             System.out.println("distance(query, " + d.p.getId() + ") = " + d.distance);
+
+            // Skip obviously bad results
+            if (d.distance < 1) {
+                results.add(new SearchResult(d.p.getId(), d.p.getModel(), 1 - d.distance));
+            }
         }
 
         Measurement.step("SeqBPSimilaritySearch.MetricComparisons", this.metric.getNumberOfComparisons());
