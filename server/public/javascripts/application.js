@@ -121,12 +121,18 @@ function SearchCtrl($scope, $window, $http, progressbar) {
 
             return 1 - score / (2*interval);
         };
-
-
-        $scope.data.quality.confidenceFirst = confidenceFirst($scope.data.results);
-        $scope.data.quality.confidenceMost = confidenceMost($scope.data.results);
-        $scope.data.quality.discriminationMost = discriminationMost($scope.data.results);
-        $scope.data.quality.discriminationAll = discriminationAll($scope.data.results);
+		
+		if ($scope.data.results.length < 1) {
+	        $scope.data.quality.confidenceFirst = "n/a";
+	        $scope.data.quality.confidenceMost = "n/a";
+	        $scope.data.quality.discriminationMost = "n/a";
+	        $scope.data.quality.discriminationAll = "n/a";
+		} else {
+	        $scope.data.quality.confidenceFirst = confidenceFirst($scope.data.results);
+	        $scope.data.quality.confidenceMost = confidenceMost($scope.data.results);
+	        $scope.data.quality.discriminationMost = discriminationMost($scope.data.results);
+	        $scope.data.quality.discriminationAll = discriminationAll($scope.data.results);
+		}
     }
 
     $scope.search = function() {
@@ -162,7 +168,12 @@ function SearchCtrl($scope, $window, $http, progressbar) {
                             progressbar.complete();
                         }, 1);
                     }, 1);
-                });
+                })
+				.error(function(data){
+					console.error(data);
+					$scope.data.results = [];
+					progressbar.complete();
+				});
         }, 0);
     }
 }
