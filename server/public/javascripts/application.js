@@ -54,7 +54,7 @@ function SearchCtrl($scope, $window, $http, progressbar) {
 
     $http({ method: 'GET', url: '/search/algorithms'})
         .success(function(data) {
-            $scope.data.algorithms data['algorithms'];
+            $scope.data.algorithms = data['algorithms'];
             //$scope.data.algorithms = _.filter(data['algorithms'], function(algorithm) { return algorithm.name != "Similarity Search (sequential)"});
             $scope.data.algorithm = $scope.data.algorithms[0].name;
         });
