@@ -18,12 +18,12 @@ public class SeqBpSimilaritySearch extends BpSimilaritySearch {
 
     @Override
     public ArrayList<SearchResult> search(NetSystem processModel) {
-        ArrayList<SearchResult> results = new ArrayList<>();
+        ArrayList<SearchResult> results = new ArrayList<SearchResult>();
 
         IDatapoint query = new RelSetDatapoint(RelSetCreatorUnfolding.getInstance().deriveRelationSet(processModel));
         query.setId("Query-" + UUID.randomUUID().toString());
 
-        SortedSet<ResultData> intermediateResults = new TreeSet<>();
+        SortedSet<ResultData> intermediateResults = new TreeSet<ResultData>();
 
         this.metric.resetCounter();
         for (IDatapoint dp : this.loadedModels) {

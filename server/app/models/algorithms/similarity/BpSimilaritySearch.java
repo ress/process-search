@@ -49,7 +49,7 @@ public class BpSimilaritySearch extends GEDSimilaritySearch {
     @Override
     public void initialize(HashMap<String, Object> parameters) {
         this.parameters = parameters;
-        repository = new Repository<>("/tmp/bpsimsearch" + QUERY_LOOKAHEAD + ".repo");
+        repository = new Repository<RelSet<NetSystem, Node>>("/tmp/bpsimsearch" + QUERY_LOOKAHEAD + ".repo");
         super.initialize();
         repository.save();
     }
@@ -61,14 +61,14 @@ public class BpSimilaritySearch extends GEDSimilaritySearch {
 
     @Override
     public ArrayList<Object> getAvailableParameters() {
-        ArrayList<Object> parameters = new ArrayList<>();
+        ArrayList<Object> parameters = new ArrayList<Object>();
 
-        HashMap<String, Object> k_value = new HashMap<>();
+        HashMap<String, Object> k_value = new HashMap<String, Object>();
         k_value.put("name", "k-value");
         k_value.put("type", "number");
         k_value.put("default", "50");
 
-        HashMap<String, Object> measurement_query = new HashMap<>();
+        HashMap<String, Object> measurement_query = new HashMap<String, Object>();
         measurement_query.put("name", "measurement_query");
         measurement_query.put("type", "number_hidden");
         measurement_query.put("default", "0");
@@ -83,7 +83,7 @@ public class BpSimilaritySearch extends GEDSimilaritySearch {
     }
 
     public HashMap<String, Object> getDefaultParameters() {
-        HashMap<String, Object> parameters = new HashMap<>();
+        HashMap<String, Object> parameters = new HashMap<String, Object>();
         parameters.put("k-value", "50");
         parameters.put("measurement_query", "0");
         return parameters;
@@ -107,7 +107,7 @@ public class BpSimilaritySearch extends GEDSimilaritySearch {
 
     @Override
     public ArrayList<SearchResult> search(NetSystem processModel) {
-        ArrayList<SearchResult> results = new ArrayList<>();
+        ArrayList<SearchResult> results = new ArrayList<SearchResult>();
         Integer k_value = Integer.valueOf((String)this.parameters.get("k-value"));
         Integer measurement_query = 0;
         Object _measurement_query = this.parameters.get("measurement_query");

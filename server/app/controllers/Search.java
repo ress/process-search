@@ -4,22 +4,19 @@ import de.uni_potsdam.hpi.bpt.qbe.evaluation.Aggregate;
 import de.uni_potsdam.hpi.bpt.qbe.evaluation.StopWatch;
 import de.uni_potsdam.hpi.bpt.qbe.index.RelationCacheRecord;
 import models.*;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.node.ArrayNode;
-import org.codehaus.jackson.node.ObjectNode;
-import org.codehaus.jackson.node.TextNode;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.TextNode;
 import org.jbpt.petri.NetSystem;
 import org.jbpt.petri.Place;
 import org.jbpt.pm.ProcessModel;
 import play.Logger;
 import play.Play;
 import play.libs.Json;
-import play.mvc.BodyParser;
-import play.mvc.Content;
-import play.mvc.Controller;
+import play.mvc.*;
 import play.mvc.Http.RequestBody;
-import play.mvc.Result;
 import scala.util.parsing.json.JSON;
 
 import java.util.*;
@@ -32,8 +29,7 @@ public class Search extends Controller {
             engine = SearchEngine.getInstance();
         }
 
-        Content html = views.html.Search.index.render(engine.getAlgorithmIdentifiers());
-        return ok(html);
+        return ok(views.html.Search.index.render(engine.getAlgorithmIdentifiers()));
     }
 
     public static Result clearMeasurements() {
@@ -76,9 +72,9 @@ public class Search extends Controller {
         if (json == null) {
             return ok("fail");
         } else {
-            String jsonModel = json.path("json").getTextValue();
-            String tpnModel = json.path("tpn").getTextValue();
-            String algorithm = json.path("algorithm").getTextValue();
+            String jsonModel = json.path("json").textValue();
+            String tpnModel = json.path("tpn").textValue();
+            String algorithm = json.path("algorithm").textValue();
             HashMap<String, Object> parameters = jsonParametersToHash(json.path("parameters"));
             Logger.info("search model, algorithm " + algorithm + ", JSON representation: " + jsonModel + ", tpn Representation: " + tpnModel);
 
@@ -161,12 +157,12 @@ public class Search extends Controller {
     }
 
     private static HashMap<String, Object> jsonParametersToHash(JsonNode jsonParameters) {
-        HashMap<String, Object> parameters = new HashMap<>();
+        HashMap<String, Object> parameters = new HashMap<String, Object>();
 
-        Iterator<Map.Entry<String, JsonNode>> fields = jsonParameters.getFields();
+        Iterator<Map.Entry<String, JsonNode>> fields = jsonParameters.fields();
         while (fields.hasNext()) {
            Map.Entry field = fields.next();
-           parameters.put(field.getKey().toString(), ((TextNode)field.getValue()).getTextValue());
+           parameters.put(field.getKey().toString(), ((TextNode)field.getValue()).textValue());
         }
 
         return parameters;

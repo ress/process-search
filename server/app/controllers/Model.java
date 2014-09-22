@@ -3,27 +3,28 @@ package controllers;
 import models.Repository;
 import models.SearchEngine;
 import models.simsearch.IDatapoint;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.JsonParser;
-import org.codehaus.jackson.JsonToken;
-import org.codehaus.jackson.node.ArrayNode;
-import org.codehaus.jackson.node.ObjectNode;
-import org.codehaus.jackson.node.TextNode;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.TextNode;
 import org.json.JSONObject;
 import play.Logger;
 import play.Play;
 import play.libs.Json;
-import play.mvc.BodyParser;
-import play.mvc.Http;
-import play.mvc.Result;
-import play.mvc.Controller;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import play.libs.F.*;
+import play.mvc.*;
 import java.util.concurrent.Callable;
+
+import static play.libs.F.Promise.promise;
 
 /**
  * Created with IntelliJ IDEA.
@@ -33,12 +34,12 @@ import java.util.concurrent.Callable;
  * To change this template use File | Settings | File Templates.
  */
 public class Model extends Controller {
-    public static Result list() {
+    public static Promise<Result> list() {
         response().setHeader("Access-Control-Allow-Origin", "*");
         final String modelPath = Play.application().configuration().getString("search.modelpath");
 
-        return async(play.libs.Akka.future(new Callable<Result>() {
-            public Result call() {
+        return promise(new Function0<Result>() {
+            public Result apply() {
                 ObjectNode response = Json.newObject();
 
                 try {
@@ -58,7 +59,7 @@ public class Model extends Controller {
                 }
                 return ok(response);
             }
-        }));
+        });
     }
 
     @BodyParser.Of(BodyParser.Json.class)
@@ -72,7 +73,7 @@ public class Model extends Controller {
         }
 
         List<String> modelsToLoad = new ArrayList<String>();
-        Iterator<JsonNode> models = req.get("models").getElements();
+        Iterator<JsonNode> models = req.get("models").elements();
         while (models.hasNext()) {
             JsonNode t = models.next();
             modelsToLoad.add(t.asText());

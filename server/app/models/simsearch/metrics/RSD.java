@@ -19,7 +19,7 @@ import org.jbpt.petri.PetriNet;
  */
 public class RSD extends ExperimentMetric {
 
-    public AggregatedSimilarity<RelSet<NetSystem, Node>, NetSystem, Node> bpsim = new AggregatedSimilarity<>();
+    public AggregatedSimilarity<RelSet<NetSystem, Node>, NetSystem, Node> bpsim = new AggregatedSimilarity<RelSet<NetSystem, Node>, NetSystem, Node>();
 
     public double innerDistance(IDatapoint profile1, IDatapoint profile2) {
 

@@ -39,12 +39,12 @@ public class SeqGEDSimilaritySearch extends GEDSimilaritySearch {
 
     @Override
     public ArrayList<SearchResult> search(NetSystem processModel) {
-        ArrayList<SearchResult> results = new ArrayList<>();
+        ArrayList<SearchResult> results = new ArrayList<SearchResult>();
 
         IDatapoint query = new SimpleGraphDatapoint(processModel);
         query.setId("Query");
 
-        SortedSet<ResultData> intermediateResults = new TreeSet<>();
+        SortedSet<ResultData> intermediateResults = new TreeSet<ResultData>();
 
         for (IDatapoint dp : this.loadedModels) {
             intermediateResults.add(new ResultData(this.metric.distance(query, dp), dp));

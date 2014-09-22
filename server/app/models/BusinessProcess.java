@@ -1,7 +1,7 @@
 package models;
 
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.jbpt.petri.NetSystem;
 import org.jbpt.petri.io.WoflanSerializer;
 import org.jbpt.pm.*;
@@ -32,9 +32,9 @@ public class BusinessProcess {
         // First pass: Create object for every node in the diagram
         Logger.error("First parsing pass: creating objects for every node in the diagram");
         for (JsonNode shape : shapes) {
-            String resourceId = shape.get("resourceId").getTextValue();
-            String label = shape.get("properties").get("name").getTextValue();
-            String type = shape.get("stencil").get("id").getTextValue();
+            String resourceId = shape.get("resourceId").textValue();
+            String label = shape.get("properties").get("name").textValue();
+            String type = shape.get("stencil").get("id").textValue();
             ArrayList<String> targetShapes;
 
             // Currently there is support for: Task, SequenceFlow
@@ -46,7 +46,7 @@ public class BusinessProcess {
                 case "SequenceFlow":
                     targetShapes = new ArrayList<String>();
                     for (JsonNode targetShape : shape.get("outgoing")) {
-                        targetShapes.add(targetShape.get("resourceId").getTextValue());
+                        targetShapes.add(targetShape.get("resourceId").textValue());
                     }
 
                     Logger.error("Found SequenceFlow resourceId='" + resourceId + "' targets=" + targetShapes.toString());
@@ -56,7 +56,7 @@ public class BusinessProcess {
                 case "Exclusive_Databased_Gateway":
                     targetShapes = new ArrayList<String>();
                     for (JsonNode targetShape : shape.get("outgoing")) {
-                        targetShapes.add(targetShape.get("resourceId").getTextValue());
+                        targetShapes.add(targetShape.get("resourceId").textValue());
                     }
 
                     Logger.info("Found XorGateway resourceId='" + resourceId + "' targets=" + targetShapes.toString());
@@ -65,7 +65,7 @@ public class BusinessProcess {
                 case "ParallelGateway":
                     targetShapes = new ArrayList<String>();
                     for (JsonNode targetShape : shape.get("outgoing")) {
-                        targetShapes.add(targetShape.get("resourceId").getTextValue());
+                        targetShapes.add(targetShape.get("resourceId").textValue());
                     }
 
                     Logger.info("Found ParallelGateway resourceId='" + resourceId + "' targets=" + targetShapes.toString());
@@ -79,8 +79,8 @@ public class BusinessProcess {
 
         // Second pass: Registering control flows between diagram nodes
         for (JsonNode shape : shapes) {
-            String sourceResourceId = shape.get("resourceId").getTextValue();
-            String type = shape.get("stencil").get("id").getTextValue();
+            String sourceResourceId = shape.get("resourceId").textValue();
+            String type = shape.get("stencil").get("id").textValue();
             FlowNode source;
 
             switch (type) {
@@ -91,7 +91,7 @@ public class BusinessProcess {
                         processModel.addFlowNode(source);
                     } else {
                         for (JsonNode targetShape : shape.get("outgoing")) {
-                            String targetId = targetShape.get("resourceId").getTextValue();
+                            String targetId = targetShape.get("resourceId").textValue();
                             if (processNodes.containsKey(targetId)) {
                                 Object target = processNodes.get(targetId);
 
@@ -121,7 +121,7 @@ public class BusinessProcess {
                     source = (FlowNode) processNodes.get(sourceResourceId);
 
                     for (JsonNode targetShape : shape.get("outgoing")) {
-                        String targetId = targetShape.get("resourceId").getTextValue();
+                        String targetId = targetShape.get("resourceId").textValue();
                         if (processNodes.containsKey(targetId)) {
                             Object target = processNodes.get(targetId);
 

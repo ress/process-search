@@ -36,10 +36,10 @@ public class Repository<M> {
             models = (HashMap<String, M>) objStream.readObject();
         } catch (IOException e) {
             // Create empty repository
-            models = new HashMap<>();
+            models = new HashMap<String, M>();
         } catch (ClassNotFoundException e) {
             Logger.error("Could not load repository from " + path + ", creating new empty repository.", e);
-            models = new HashMap<>();
+            models = new HashMap<String, M>();
         }
     }
 

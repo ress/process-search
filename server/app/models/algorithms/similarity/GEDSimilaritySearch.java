@@ -47,7 +47,7 @@ public class GEDSimilaritySearch implements SearchAlgorithm
     protected static final float QUERY_RADIUS = 0.5f;
     protected static final int QUERY_K = 10;
     protected static final int QUERY_LOOKAHEAD = 10000;
-    public Set<IDatapoint> loadedModels = new HashSet<>();
+    public Set<IDatapoint> loadedModels = new HashSet<IDatapoint>();
 
     // Hardcoded to 50 in Matthias' code
     public int nodesize = 10;
@@ -63,7 +63,7 @@ public class GEDSimilaritySearch implements SearchAlgorithm
 
     @Override
     public ArrayList<Object> getAvailableParameters() {
-        return new ArrayList<>();
+        return new ArrayList<Object>();
     }
 
     @Override
@@ -117,7 +117,7 @@ public class GEDSimilaritySearch implements SearchAlgorithm
 
     @Override
     public ArrayList<SearchResult> search(NetSystem processModel) {
-        ArrayList<SearchResult> results = new ArrayList<>();
+        ArrayList<SearchResult> results = new ArrayList<SearchResult>();
         IDatapoint query = new SimpleGraphDatapoint(processModel);
         query.setId("SearchQuery");
 

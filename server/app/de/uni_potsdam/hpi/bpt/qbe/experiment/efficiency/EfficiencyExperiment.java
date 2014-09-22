@@ -91,8 +91,8 @@ public abstract class EfficiencyExperiment extends Experiment {
 
 		if (null == this.index) {this.index = new RelationInvertedIndex();}
 		
-		Aggregate<Long> seqSearchTime = new Aggregate<>();
-		Aggregate<Long> effSearchTime = new Aggregate<>();
+		Aggregate<Long> seqSearchTime = new Aggregate<Long>();
+		Aggregate<Long> effSearchTime = new Aggregate<Long>();
 		
 		
 		  
@@ -209,7 +209,7 @@ public abstract class EfficiencyExperiment extends Experiment {
 			
 			int missedCandidates  = 0;
 			int invalidCandidates = 0; 
-			Aggregate<Integer> prunedCandidates = new Aggregate<>();
+			Aggregate<Integer> prunedCandidates = new Aggregate<Integer>();
 			
 			//System.out.print("\t>");
 			for (OneSuccessorRelation<NetSystem, Node> qrel : queries) {

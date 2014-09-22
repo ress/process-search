@@ -21,7 +21,7 @@ import java.util.Set;
  */
 public class SearchEngine {
     public ArrayListMultimap<String, SearchAlgorithm> algorithms;
-	public HashMap<String, Class<? extends SearchAlgorithm>> algorithmClasses = new HashMap<>();
+	public HashMap<String, Class<? extends SearchAlgorithm>> algorithmClasses = new HashMap<String, Class<? extends SearchAlgorithm>>();
     protected static SearchEngine instance;
 
     public static SearchEngine getInstance() {

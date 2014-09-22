@@ -17,7 +17,7 @@ import java.util.Set;
 
 
 public class SimpleSearch implements SearchAlgorithm {
-    protected ArrayList<NetSystem> models = new ArrayList<>();
+    protected ArrayList<NetSystem> models = new ArrayList<NetSystem>();
 
     @Override
     public String getIdentifier() {
@@ -26,7 +26,7 @@ public class SimpleSearch implements SearchAlgorithm {
 
     @Override
     public ArrayList<Object> getAvailableParameters() {
-        return new ArrayList<>();
+        return new ArrayList<Object>();
     }
 
     @Override
@@ -57,7 +57,7 @@ public class SimpleSearch implements SearchAlgorithm {
 
     @Override
     public ArrayList<SearchResult> search(NetSystem queryModel) {
-        ArrayList<SearchResult> results = new ArrayList<>();
+        ArrayList<SearchResult> results = new ArrayList<SearchResult>();
 
         Set<Transition> query_transitions = queryModel.getTransitions();
         for (NetSystem model : this.models) {

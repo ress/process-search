@@ -23,9 +23,9 @@ public class Measurement {
 
     /* Measurement is a singleton */
     protected Measurement() {
-        this.stopWatches = new HashMap<>();
-        this.persistentStopWatches = new HashMap<>();
-        this.steppers = new HashMap<>();
+        this.stopWatches = new HashMap<String, StopWatch>();
+        this.persistentStopWatches = new HashMap<String, StopWatch>();
+        this.steppers = new HashMap<String, Integer>();
     }
 
     public static Measurement getInstance() {
@@ -143,7 +143,7 @@ public class Measurement {
     }
 
     protected HashMap<String, StopWatch> _getAllStopWatches() {
-        HashMap<String, StopWatch> stopWatches = new HashMap<>();
+        HashMap<String, StopWatch> stopWatches = new HashMap<String, StopWatch>();
 
         if (this.stopWatches.size() > 0)
             stopWatches.putAll(this.stopWatches);

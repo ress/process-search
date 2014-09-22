@@ -43,17 +43,17 @@ public class QueryingByExample implements SearchAlgorithm {
 
     @Override
     public ArrayList<Object> getAvailableParameters() {
-        return new ArrayList<>();
+        return new ArrayList<Object>();
     }
 
     @Override
     public HashMap<String, Object> getParameters() {
-        return new HashMap<>();
+        return new HashMap<String, Object>();
     }
 
     @Override
     public void initialize() {
-        repository = new Repository<>("/tmp/qbe.repo");
+        repository = new Repository<MinimalKSuccessorRelation<NetSystem, Node>>("/tmp/qbe.repo");
 
         try {
             index = new RelationInvertedIndex();
@@ -101,7 +101,7 @@ public class QueryingByExample implements SearchAlgorithm {
 
     @Override
     public ArrayList<SearchResult> search(NetSystem processModel) {
-        ArrayList<SearchResult> results = new ArrayList<>();
+        ArrayList<SearchResult> results = new ArrayList<SearchResult>();
 
         try {
             Measurement.start("QueryingByExample.search");
@@ -118,7 +118,7 @@ public class QueryingByExample implements SearchAlgorithm {
 
             return results;
         } catch (IOException e) {
-            return new ArrayList<>();
+            return new ArrayList<SearchResult>();
         }
     }
 }

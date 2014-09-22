@@ -70,22 +70,22 @@ public class MtreeSimilaritySearch implements SearchAlgorithm {
 
     @Override
     public ArrayList<Object> getAvailableParameters() {
-        return new ArrayList<>();
+        return new ArrayList<Object>();
     }
 
     @Override
     public HashMap<String, Object> getParameters() {
-        return new HashMap<>();
+        return new HashMap<String, Object>();
     }
 
     @Override
     public void initialize() {
-        repository = new Repository<>("/tmp/mtree.repo");
+        repository = new Repository<RelSet<NetSystem, Node>>("/tmp/mtree.repo");
         distanceMetric = new MTreeDistanceMetric();
         SplitFunction<RelSetDatapoint> splitFunction = new ComposedSplitFunction<RelSetDatapoint>(
                 new PromotionFunctions.mLbDistPromotion<RelSetDatapoint>(),
                 new PartitionFunctions.BalancedPartition<RelSetDatapoint>());
-        tree = new MTree<>(4, distanceMetric, splitFunction);
+        tree = new MTree<RelSetDatapoint>(4, distanceMetric, splitFunction);
 
         final String modelPath = Play.application().configuration().getString("search.modelpath");
         try {
@@ -119,7 +119,7 @@ public class MtreeSimilaritySearch implements SearchAlgorithm {
 
     @Override
     public ArrayList<SearchResult> search(NetSystem processModel) {
-        ArrayList<SearchResult> searchResults = new ArrayList<>();
+        ArrayList<SearchResult> searchResults = new ArrayList<SearchResult>();
         RelSetDatapoint query = new RelSetDatapoint(RelSetCreatorUnfolding.getInstance().deriveRelationSet(processModel));
         query.setId("Query-" + UUID.randomUUID().toString());
 
